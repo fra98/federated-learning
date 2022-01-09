@@ -6,6 +6,8 @@ import torch.optim as optim
 
 from .client import Client
 from .models import *
+from .utils import load_cifar
+
 
 class Server():
   def __init__(self, device, data_config={}, model_config={}, optim_config={}, fed_config={}):
@@ -13,18 +15,18 @@ class Server():
     self.clients = []
 
     # DATASET CONFIGURATION
-    self.num_classes = data_config["num_classes"]
-    self.trainset = data_config["trainset"]
-    self.testset = data_config["testset"]
+    self.trainset = load_cifar(name=data_config["dataset_name"], train=True)
+    self.testset = load_cifar(name=data_config["dataset_name"], train=False)
     self.trainset_size = len(self.trainset)
     self.testset_size = len(self.testset)
+    self.num_classes = len(self.trainset.classes)
     self.IID = data_config["IID"]
     self.global_batch_size = data_config["global_batch_size"]
 
     # MODEL CONFIGURATION
     self.model_config = model_config
     self.optim_config = optim_config
-    self.global_net = eval(model_config["net"])()
+    self.global_net = eval(model_config["net"])(self.num_classes)
 
     # FEDERATED CONFIGURATION
     self.num_clients = fed_config["num_clients"]

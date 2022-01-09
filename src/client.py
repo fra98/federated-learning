@@ -13,33 +13,36 @@ class Client():
     # DATASET CONFIGURATION
     self.batch_size = batch_size
     self.trainset = trainset
-    self.trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
     self.trainset_size = len(trainset)
+    self.num_classes = len(self.trainset.dataset.classes)   # trinaset is a subset! access .dataset to obtain classes
 
     # MODEL CONFIGURATION
     self.model_config = model_config
     self.optim_config = optim_config
-    self.net = eval(self.model_config["net"])()
+    self.net = eval(self.model_config["net"])(self.num_classes)
 
   def client_update(self, state_dict):
     # Init net with current weights
     self.net.to(self.device)
     self.net.load_state_dict(state_dict)
-    
+
     # Criterion and optimizer
     criterion = eval(self.model_config["criterion"])()
     trainable_params = [p for p in self.net.parameters() if p.requires_grad]
     optimizer = eval(self.model_config["optimizer"])(trainable_params, lr=self.optim_config["lr"], 
                       momentum=self.optim_config["momentum"], weight_decay=self.optim_config["weight_decay"])
+    
+    # Trainloader
+    trainloader = torch.utils.data.DataLoader(self.trainset, batch_size=self.batch_size, shuffle=True, num_workers=2)
 
     trainSamples = self.trainset_size - (self.trainset_size % self.batch_size)
-    iterPerEpoch = len(self.trainloader)
+    iterPerEpoch = len(trainloader)
 
     for epoch in range(self.local_epochs):  # loop over the dataset multiple times
         epoch_loss = 0
         numCorrTrain = 0
 
-        for _, data in enumerate(self.trainloader, 0):
+        for _, data in enumerate(trainloader, 0):
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data[0].to(self.device), data[1].to(self.device)
 

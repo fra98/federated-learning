@@ -3,14 +3,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class LeNet5_MOD(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes=10):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=5)
         self.fc1 = nn.Linear(64 * 5 * 5, 384)
         self.fc2 = nn.Linear(384, 192)
-        self.fc3 = nn.Linear(192, 10)
+        self.fc3 = nn.Linear(192, num_classes)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -22,8 +22,10 @@ class LeNet5_MOD(nn.Module):
         return x
 
 class LeNet5_MOD_LIGHT(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes=10):
         super().__init__()
+        if num_classes != 10:
+            raise NameError("LeNet5_MOD_LIGHT does not yet support num_classes different from 10")
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=6, kernel_size=5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5)
