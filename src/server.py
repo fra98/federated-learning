@@ -5,10 +5,10 @@ import torch.nn as nn
 import torch.optim as optim
 
 from .client import Client
-from .models import LeNet5_MOD
+from .models import *
 
 class Server():
-  def __init__(self, device, data_config={}, optim_config={}, fed_config={}):
+  def __init__(self, device, data_config={}, model_config={}, optim_config={}, fed_config={}):
     self.device = device 
     self.clients = []
 
@@ -22,9 +22,9 @@ class Server():
     self.global_batch_size = data_config["global_batch_size"]
 
     # MODEL CONFIGURATION
-    self.global_net = LeNet5_MOD()
-    self.criterion = nn.CrossEntropyLoss()
+    self.model_config = model_config
     self.optim_config = optim_config
+    self.global_net = eval(model_config["net"])()
 
     # FEDERATED CONFIGURATION
     self.num_clients = fed_config["num_clients"]
@@ -38,7 +38,8 @@ class Server():
         if self.IID:
             indexes = list(range(i, self.trainset_size, self.num_clients))
             trainset_i = torch.utils.data.Subset(self.trainset, indexes)
-            client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i)
+            client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i, 
+                            model_config=self.model_config, optim_config=self.optim_config)
             self.clients.append(client)
         else:
             raise NameError("NON-IID not yet implemented")
@@ -55,14 +56,9 @@ class Server():
       # Save state at round t
       state_t = deepcopy(self.global_net.state_dict())
 
-      # Run simulation on each client 
+      # Run update on each client 
       for client in self.clients:
-        client.init_net(state_t)
-
-        trainable_params = [p for p in client.net.parameters() if p.requires_grad]
-        optimizer = optim.SGD(trainable_params, lr=self.optim_config["lr"], weight_decay=self.optim_config["weight_decay"], momentum=self.optim_config["momentum"])
-
-        client.client_update(self.criterion, optimizer)
+        client.client_update(state_t)
 
       # AVERAGING
 
@@ -80,6 +76,7 @@ class Server():
   def run_testing(self):
     testloader = torch.utils.data.DataLoader(self.testset, batch_size=self.global_batch_size, shuffle=False, num_workers=2)
     self.global_net.train(False)
+    criterion = eval(self.model_config["criterion"])()
     val_loss_epoch = 0
     numCorr = 0
     val_samples = self.testset_size
@@ -93,7 +90,7 @@ class Server():
             outputs = self.global_net(images)
 
             # the class with the highest energy is what we choose as prediction
-            val_loss = self.criterion(outputs, labels)
+            val_loss = criterion(outputs, labels)
             val_loss_step = val_loss.data.item()
             val_loss_epoch += val_loss_step
             _, predicted = torch.max(outputs.data, 1)
