@@ -78,7 +78,7 @@ class Server():
         nn.init.zeros_(layer)
 
       # Do the average
-      for client in self.clients:
+      for client in selected_clients:
         for key in self.global_net.state_dict().keys():
           tensor = client.net.state_dict()[key]
           weighted_tensor = tensor * (client.trainset_size / self.trainset_size)
