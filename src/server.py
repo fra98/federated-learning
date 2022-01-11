@@ -1,4 +1,5 @@
 from copy import deepcopy
+import random
 
 import torch
 import torch.nn as nn
@@ -30,8 +31,9 @@ class Server():
 
     # FEDERATED CONFIGURATION
     self.num_clients = fed_config["num_clients"]
+    self.avg_clients_rounds = fed_config["avg_clients_rounds"]
+    self.std_clients_rounds = fed_config["std_clients_rounds"]
     self.num_rounds = fed_config["num_rounds"]
-    self.clients_fraction = fed_config["clients_fraction"]
     self.client_batch_size = fed_config["client_batch_size"]
     self.local_epochs = fed_config["local_epochs"]
 
@@ -58,8 +60,15 @@ class Server():
       # Save state at round t
       state_t = deepcopy(self.global_net.state_dict())
 
+      # Get the selected clients for this round
+      num_selected_clients = int(max(min(self.num_clients, random.gauss(self.avg_clients_rounds * self.num_clients, self.std_clients_rounds * self.num_clients)), 1))
+      selected_clients = random.sample(self.clients, num_selected_clients)
+
+      if self.std_clients_rounds != 0:  
+        print(f"{num_selected_clients} clients selected")
+
       # Run update on each client 
-      for client in self.clients:
+      for client in selected_clients:
         client.client_update(state_t)
 
       # AVERAGING

@@ -26,8 +26,9 @@ WEIGHT_DECAY = 4e-4       # Regularization, you can keep this at the default
 
 # Fed config
 NUM_CLIENTS = 2
+AVG_CLIENTS_ROUND = 0.5 # Average number of clients per round, relative to num_clients 
+STD_CLIENTS_ROUND = 0 # Standard deviation of number of clients per round (0 for constant distribution), relative to num_clients 
 NUM_ROUNDS = 2
-CLIENTS_FRACTION = 1
 CLIENT_BATCH_SIZE = 64
 LOCAL_EPOCHS = 2
 
@@ -54,8 +55,9 @@ optim_config = {
 
 fed_config = {
     'num_clients' : NUM_CLIENTS,
+    'avg_clients_rounds' : AVG_CLIENTS_ROUND,
+    'std_clients_rounds' : STD_CLIENTS_ROUND,
     'num_rounds' : NUM_ROUNDS,
-    'clients_fraction' : CLIENTS_FRACTION,
     'client_batch_size' : CLIENT_BATCH_SIZE,
     'local_epochs': LOCAL_EPOCHS   
 }
