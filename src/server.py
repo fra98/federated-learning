@@ -63,6 +63,7 @@ class Server():
       # Get the selected clients for this round
       num_selected_clients = int(max(min(self.num_clients, random.gauss(self.avg_clients_rounds * self.num_clients, self.std_clients_rounds * self.num_clients)), 1))
       selected_clients = random.sample(self.clients, num_selected_clients)
+      num_samples = sum(c.trainset_size for c in selected_clients)
 
       if self.std_clients_rounds != 0:  
         print(f"{num_selected_clients} clients selected")
@@ -81,8 +82,8 @@ class Server():
       for client in selected_clients:
         for key in self.global_net.state_dict().keys():
           tensor = client.net.state_dict()[key]
-          weighted_tensor = tensor * (client.trainset_size / self.trainset_size)
-          self.global_net.state_dict()[key] += weighted_tensor
+          weight = client.trainset_size / num_samples
+          self.global_net.state_dict()[key] += weight * tensor
 
   def run_testing(self):
     testloader = torch.utils.data.DataLoader(self.testset, batch_size=self.global_batch_size, shuffle=False, num_workers=2)
