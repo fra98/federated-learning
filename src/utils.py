@@ -14,7 +14,7 @@ def load_cifar(name, train):
         raise NameError("Dataset not found")
 
 
-def run_accuracy(device, dataset, batch_size, net, criterion) -> tuple[float, float]: 
+def run_accuracy(device, dataset, batch_size, net, criterion): 
     net.train(False)
     testloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=2)
 
