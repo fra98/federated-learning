@@ -7,11 +7,11 @@ import torch.optim as optim
 
 from .client import Client
 from .models import *
-from .utils import load_cifar
+from .utils import load_cifar, run_accuracy
 
 
-class Server():
-  def __init__(self, device, data_config={}, model_config={}, optim_config={}, fed_config={}):
+class Server:
+  def __init__(self, device, data_config, model_config, optim_config, fed_config):
     self.device = device 
     self.clients = []
 
@@ -72,43 +72,38 @@ class Server():
       for client in selected_clients:
         client.client_update(state_t)
 
-      # AVERAGING
+      print("Server (BEFORE AVG) ->", end=' ')
+      self.run_weighted_clients_accuracy()
 
-      # Reset to 0 all gloabl_net parameters
+      # AVERAGING
+      # reset to 0 all global_net parameters
       for layer in self.global_net.parameters():
         nn.init.zeros_(layer)
 
-      # Do the average
+      # do the average
       for client in selected_clients:
         for key in self.global_net.state_dict().keys():
           tensor = client.net.state_dict()[key]
           weight = client.trainset_size / num_samples
           self.global_net.state_dict()[key] += weight * tensor
 
+      print("Server (AFTER AVG)  ->", end=' ')
+      self.run_weighted_clients_accuracy(state_dict=self.global_net.state_dict())
+
+  def run_weighted_clients_accuracy(self, state_dict=None):
+    accuracy = 0
+    loss = 0
+    for client in self.clients:
+      client_accuracy, client_loss = client.train_accuracy(state_dict=state_dict)
+      weight = client.trainset_size / self.trainset_size
+      accuracy += weight * client_accuracy
+      loss += weight * client_loss
+
+    print(f'Train (weighted clients): Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+
   def run_testing(self):
-    testloader = torch.utils.data.DataLoader(self.testset, batch_size=self.global_batch_size, shuffle=False, num_workers=2)
-    self.global_net.train(False)
     criterion = eval(self.model_config["criterion"])()
-    val_loss_epoch = 0
-    numCorr = 0
-    val_samples = self.testset_size
-    val_steps = len(testloader)
-
-    # since we're not training, we don't need to calculate the gradients for our outputs
-    with torch.no_grad():
-        for j, data in enumerate(testloader):
-            # calculate outputs by running images through the network
-            images, labels = data[0].to(self.device), data[1].to(self.device)
-            outputs = self.global_net(images)
-
-            # the class with the highest energy is what we choose as prediction
-            val_loss = criterion(outputs, labels)
-            val_loss_step = val_loss.data.item()
-            val_loss_epoch += val_loss_step
-            _, predicted = torch.max(outputs.data, 1)
-            numCorr += torch.sum(predicted == labels.data).data.item()
-        
-        val_accuracy = (numCorr / val_samples) * 100
-        avg_val_loss = val_loss_epoch / val_steps
-
-    print(f'Test Set: Loss {avg_val_loss:.3f} | Accuracy = {val_accuracy:.3f}')
+    accuracy, loss = run_accuracy(device=self.device, dataset=self.testset, 
+                                  batch_size=self.global_batch_size, net=self.global_net, 
+                                  criterion=criterion)
+    print(f'Test Set: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
