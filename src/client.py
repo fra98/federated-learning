@@ -23,7 +23,7 @@ class Client:
         self.optim_config = optim_config
         self.net = eval(self.model_config["net"])(self.num_classes)
 
-    def client_update(self, state_dict):
+    def client_update(self, state_dict, drop_last=False):
         # Init net with current weights
         self.net.to(self.device)
         self.net.load_state_dict(state_dict)
@@ -37,9 +37,12 @@ class Client:
 
         # Trainloader
         trainloader = torch.utils.data.DataLoader(self.trainset, batch_size=self.batch_size, shuffle=True,
-                                                  num_workers=2)
+                                                  num_workers=2, drop_last=drop_last)
 
-        train_samples = self.trainset_size - (self.trainset_size % self.batch_size)
+        if drop_last:
+            train_samples = self.trainset_size - (self.trainset_size % self.batch_size)
+        else:
+            train_samples = self.trainset_size
         iter_per_epoch = len(trainloader)
 
         for epoch in range(self.local_epochs):  # loop over the dataset multiple times
