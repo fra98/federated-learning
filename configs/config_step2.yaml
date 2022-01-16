@@ -1,6 +1,7 @@
 data_config:
   dataset_name: "CIFAR10"
-  IID: True # False
+  IID: False
+  alpha: 10
   global_batch_size: 64
 ---
 model_config:
@@ -20,3 +21,4 @@ fed_config:
   num_rounds: 5
   client_batch_size: 64 
   local_epochs: 3
+  fed_IR: False

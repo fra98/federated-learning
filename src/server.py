@@ -7,7 +7,7 @@ import torch.optim as optim
 
 from .client import Client
 from .models import *
-from .utils import load_cifar, run_accuracy
+from .utils import load_cifar, run_accuracy, indexes_split_IID, indexes_split_NON_IID
 
 
 class Server:
@@ -22,6 +22,8 @@ class Server:
         self.testset_size = len(self.testset)
         self.num_classes = len(self.trainset.classes)
         self.IID = data_config["IID"]
+        if not self.IID:
+            self.alpha = data_config["alpha"]
         self.global_batch_size = data_config["global_batch_size"]
 
         # MODEL CONFIGURATION
@@ -36,21 +38,23 @@ class Server:
         self.num_rounds = fed_config["num_rounds"]
         self.client_batch_size = fed_config["client_batch_size"]
         self.local_epochs = fed_config["local_epochs"]
+        self.fed_IR = fed_config["fed_IR"]
 
     def init_clients(self):
+        if self.IID:
+            indexes = indexes_split_IID(self.num_clients, self.trainset_size)
+        else:
+            indexes = indexes_split_NON_IID(self.num_clients, self.num_classes, self.alpha, self.trainset)
+
         for i in range(self.num_clients):
-            if self.IID:
-                indexes = list(range(i, self.trainset_size, self.num_clients))
-                trainset_i = torch.utils.data.Subset(self.trainset, indexes)
-                client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
-                                model_config=self.model_config, optim_config=self.optim_config)
-                self.clients.append(client)
-            else:
-                raise NameError("NON-IID not yet implemented")
+            trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
+            client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
+                            model_config=self.model_config, optim_config=self.optim_config)
+            self.clients.append(client)
 
     def run_training(self):
         if len(self.clients) == 0:
-            raise NameError("Clients NOT initialized")
+            self.init_clients()
 
         self.global_net.to(self.device)
 

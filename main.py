@@ -8,7 +8,8 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # 'cuda
 
 # Data config
 DATASET_NAME = "CIFAR10"   
-IID = True
+IID = False
+ALPHA = 1
 GLOBAL_BATCH_SIZE = 64 
 
 # Model config
@@ -31,12 +32,14 @@ STD_CLIENTS_ROUND = 0  # Std-dev of number of clients per round (0 for constant 
 NUM_ROUNDS = 2
 CLIENT_BATCH_SIZE = 64
 LOCAL_EPOCHS = 2
+FED_IR = False
 
 
 # SETUP DICTIONARIES 
 data_config = {
     'dataset_name': DATASET_NAME,
     'IID': IID,
+    'alpha': ALPHA,
     'global_batch_size': GLOBAL_BATCH_SIZE
 }
 
@@ -58,7 +61,8 @@ fed_config = {
     'std_clients_rounds': STD_CLIENTS_ROUND,
     'num_rounds': NUM_ROUNDS,
     'client_batch_size': CLIENT_BATCH_SIZE,
-    'local_epochs': LOCAL_EPOCHS   
+    'local_epochs': LOCAL_EPOCHS,
+    'fed_IR': FED_IR
 }
 
 
