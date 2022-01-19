@@ -7,7 +7,8 @@ from .utils import run_accuracy
 
 
 class Client:
-    def __init__(self, id, device, local_epochs, batch_size, trainset, model_config, optim_config):
+    def __init__(self, id, device, local_epochs, batch_size, trainset, model_config, optim_config,
+                 class_probabilities=None):
         self.id = id
         self.device = device
         self.local_epochs = local_epochs
@@ -17,6 +18,7 @@ class Client:
         self.trainset = trainset
         self.trainset_size = len(trainset)
         self.num_classes = len(self.trainset.dataset.classes)  # trainset is a subset! access .dataset to obtain classes
+        self.class_probabilities = class_probabilities
 
         # MODEL CONFIGURATION
         self.model_config = model_config
@@ -58,6 +60,16 @@ class Client:
 
                 # forward + backward + optimize
                 outputs = self.net(inputs)
+                # FedIR implementation
+                if self.class_probabilities is not None:
+                    probabilities = torch.zeros((self.num_classes)).to(self.device)
+                    for i in range(self.num_classes):
+                        probabilities[i] = torch.sum(i == labels.data).data.item()
+                    probabilities = probabilities/torch.sum(probabilities)
+                    weight = (self.class_probabilities/probabilities).detach()
+                    #print(weight)
+                    criterion = eval(self.model_config["criterion"])(weight=weight)
+
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()

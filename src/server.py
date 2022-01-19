@@ -1,5 +1,7 @@
 from copy import deepcopy
+import enum
 import random
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -39,6 +41,14 @@ class Server:
         self.client_batch_size = fed_config["client_batch_size"]
         self.local_epochs = fed_config["local_epochs"]
         self.fed_IR = fed_config["fed_IR"]
+        self.class_probablities = None
+
+        if self.fed_IR:
+            self.class_probablities = np.zeros((self.num_classes), dtype=np.int)
+            for i in range(self.num_classes):
+                self.class_probablities[i] = np.sum(i == np.array(self.trainset.targets))
+            self.class_probablities = torch.tensor(self.class_probablities).to(self.device)
+            self.class_probablities = self.class_probablities/torch.sum(self.class_probablities)
 
     def init_clients(self):
         if self.IID:
@@ -49,7 +59,8 @@ class Server:
         for i in range(self.num_clients):
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
             client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
-                            model_config=self.model_config, optim_config=self.optim_config)
+                            model_config=self.model_config, optim_config=self.optim_config,
+                            class_probabilities=self.class_probablities)
             self.clients.append(client)
 
     def run_training(self):

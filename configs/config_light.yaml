@@ -21,4 +21,4 @@ fed_config:
   num_rounds: 2
   client_batch_size: 64 
   local_epochs: 2
-  fed_IR: False
+  fed_IR: True
