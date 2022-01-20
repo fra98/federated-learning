@@ -21,7 +21,7 @@ if __name__ == "__main__":
     server.init_clients()
 
     # TRAINING
-    server.run_training()
+    server.run_training(print_acc=True)
 
     # TESTING
     server.run_testing()

@@ -92,3 +92,12 @@ def indexes_split_NON_IID(num_clients, num_classes, alpha, dataset):  # class-ba
             offsets_class[class_label] += 1
 
     return indexes
+
+
+def get_class_priors(num_classes, labels, device='cpu'):
+    labels = torch.tensor(labels, dtype=torch.int).to(device)
+    priors = torch.zeros(num_classes)
+    for i in range(num_classes):
+        priors[i] = torch.sum(i == labels).data.item()
+
+    return priors / torch.sum(priors)

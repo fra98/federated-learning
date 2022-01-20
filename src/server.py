@@ -1,7 +1,5 @@
 from copy import deepcopy
-import enum
 import random
-import numpy as np
 
 import torch
 import torch.nn as nn
@@ -9,7 +7,7 @@ import torch.optim as optim
 
 from .client import Client
 from .models import *
-from .utils import load_cifar, run_accuracy, indexes_split_IID, indexes_split_NON_IID
+from .utils import get_class_priors, load_cifar, run_accuracy, indexes_split_IID, indexes_split_NON_IID
 
 
 class Server:
@@ -23,10 +21,11 @@ class Server:
         self.trainset_size = len(self.trainset)
         self.testset_size = len(self.testset)
         self.num_classes = len(self.trainset.classes)
+        self.class_priors = get_class_priors(self.num_classes, self.trainset.targets)
+        self.global_batch_size = data_config["global_batch_size"]
         self.IID = data_config["IID"]
         if not self.IID:
             self.alpha = data_config["alpha"]
-        self.global_batch_size = data_config["global_batch_size"]
 
         # MODEL CONFIGURATION
         self.model_config = model_config
@@ -41,14 +40,6 @@ class Server:
         self.client_batch_size = fed_config["client_batch_size"]
         self.local_epochs = fed_config["local_epochs"]
         self.fed_IR = fed_config["fed_IR"]
-        self.class_probablities = None
-
-        if self.fed_IR:
-            self.class_probablities = np.zeros((self.num_classes), dtype=np.int)
-            for i in range(self.num_classes):
-                self.class_probablities[i] = np.sum(i == np.array(self.trainset.targets))
-            self.class_probablities = torch.tensor(self.class_probablities).to(self.device)
-            self.class_probablities = self.class_probablities/torch.sum(self.class_probablities)
 
     def init_clients(self):
         if self.IID:
@@ -60,7 +51,7 @@ class Server:
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
             client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
                             model_config=self.model_config, optim_config=self.optim_config,
-                            class_probabilities=self.class_probablities)
+                            server_class_priors=self.class_priors)
             self.clients.append(client)
 
     def run_training(self, print_acc=True):
@@ -87,7 +78,7 @@ class Server:
 
             # Run update on each client
             for client in selected_clients:
-                client.client_update(state_t)
+                client.client_update(state_t, fed_IR=self.fed_IR, print_acc=print_acc)
 
             if print_acc:
                 print("[BEFORE AVG]", end='\t')
@@ -127,8 +118,8 @@ class Server:
         criterion = eval(self.model_config["criterion"])()
 
         accuracy, loss = run_accuracy(device=self.device, dataset=dataset,
-                                    batch_size=self.global_batch_size, net=self.global_net,
-                                    criterion=criterion)
+                                      batch_size=self.global_batch_size, net=self.global_net,
+                                      criterion=criterion)
 
         if train:
             print(f'Server -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
