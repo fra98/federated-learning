@@ -35,7 +35,7 @@ class Client:
 
         # Criterion and optimizer
         if fed_IR:
-            criterion = eval(self.model_config["criterion"])(weight=self.weight)
+            criterion = eval(self.model_config["criterion"])(weight=self.weight.to(self.device))
         else:
             criterion = eval(self.model_config["criterion"])()
         trainable_params = [p for p in self.net.parameters() if p.requires_grad]
