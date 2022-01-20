@@ -63,7 +63,7 @@ class Server:
                             class_probabilities=self.class_probablities)
             self.clients.append(client)
 
-    def run_training(self):
+    def run_training(self, print_acc=True):
         if len(self.clients) == 0:
             self.init_clients()
 
@@ -89,8 +89,9 @@ class Server:
             for client in selected_clients:
                 client.client_update(state_t)
 
-            print("Server (BEFORE AVG) ->", end=' ')
-            self.run_weighted_clients_accuracy()
+            if print_acc:
+                print("[BEFORE AVG]", end='\t')
+                self.run_weighted_clients_accuracy()
 
             # AVERAGING
             # reset to 0 all global_net parameters
@@ -104,8 +105,8 @@ class Server:
                     weight = client.trainset_size / num_samples
                     self.global_net.state_dict()[key] += weight * tensor
 
-            print("Server (AFTER AVG)  ->", end=' ')
-            self.run_weighted_clients_accuracy(state_dict=self.global_net.state_dict())
+            print("[AFTER AVG]", end='\t')
+            self.run_testing(train=True)
 
     def run_weighted_clients_accuracy(self, state_dict=None):
         accuracy = 0
@@ -116,11 +117,20 @@ class Server:
             accuracy += weight * client_accuracy
             loss += weight * client_loss
 
-        print(f'Train (weighted clients): Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+        print(f'Weighted Clients -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
 
-    def run_testing(self):
+    def run_testing(self, train=False):
+        if train:
+            dataset = self.trainset
+        else:
+            dataset = self.testset
         criterion = eval(self.model_config["criterion"])()
-        accuracy, loss = run_accuracy(device=self.device, dataset=self.testset,
-                                      batch_size=self.global_batch_size, net=self.global_net,
-                                      criterion=criterion)
-        print(f'Test Set: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+
+        accuracy, loss = run_accuracy(device=self.device, dataset=dataset,
+                                    batch_size=self.global_batch_size, net=self.global_net,
+                                    criterion=criterion)
+
+        if train:
+            print(f'Server -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+        else:
+            print(f'Server -> Test: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
