@@ -7,14 +7,33 @@ from copy import deepcopy
 
 
 def load_cifar(name, train):
-    transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
     if name == 'CIFAR10':
-        return torchvision.datasets.CIFAR10(root='./data/cifar10', train=train, download=True, transform=transform)
+        dataset = torchvision.datasets.CIFAR10
+        mean = (0.49139968, 0.48215841, 0.44653091)
+        std = (0.24703223, 0.24348513, 0.26158784)
+        image_size = 32
     elif name == 'CIFAR100':
-        return torchvision.datasets.CIFAR100(root='./data/cifar100', train=train, download=True, transform=transform)
+        dataset = torchvision.datasets.CIFAR100
+        mean = (0.50707516, 0.48654887, 0.44091784)
+        std = (0.26733429, 0.25643846, 0.27615047)
+        image_size = 32
     else:
-        raise NameError("Dataset not found")
+        raise NameError("Dataset not implemented")
+
+    if train:
+        transform = transforms.Compose([
+            # transforms.RandomCrop(image_size, padding=4),
+            # transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std)
+        ])
+    else:
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=mean, std=std)
+        ])
+
+    return dataset(root=f'./data/{name}', train=train, download=True, transform=transform)
 
 
 def run_accuracy(device, dataset, batch_size, net, criterion): 
