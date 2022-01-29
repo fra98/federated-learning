@@ -11,6 +11,7 @@ DATASET_NAME = "CIFAR10"
 IID = False
 ALPHA = 1
 GLOBAL_BATCH_SIZE = 64 
+STD_CLIENT_SAMPLES = 0.2 # Std-dev of number of sample per client, relative to average number of sample
 
 # Model config
 NET = "LeNet5_MOD_LIGHT"
@@ -40,7 +41,8 @@ data_config = {
     'dataset_name': DATASET_NAME,
     'IID': IID,
     'alpha': ALPHA,
-    'global_batch_size': GLOBAL_BATCH_SIZE
+    'global_batch_size': GLOBAL_BATCH_SIZE,
+    'std_client_samples': STD_CLIENT_SAMPLES 
 }
 
 model_config = {

@@ -72,7 +72,7 @@ def indexes_split_IID(num_clients, trainset_size):
     return indexes
 
 
-def indexes_split_NON_IID(num_clients, num_classes, alpha, dataset):  # class-balanced
+def indexes_split_NON_IID(num_clients, num_classes, alpha, dataset, clients_sizes):  # class-balanced
     # NOTE: this split assumes equal class distribution -> true for cifar
     client_data_size = len(dataset) // num_clients
     num_samples_per_class = len(dataset) // num_classes
@@ -93,7 +93,10 @@ def indexes_split_NON_IID(num_clients, num_classes, alpha, dataset):  # class-ba
 
     offsets_class = np.zeros(num_classes, dtype=np.int32)
     shuffled_classes = deepcopy(classes)
-    for user_id in range(num_clients):      
+    for user_id in range(num_clients):   
+        # important, now each client has a different size 
+        client_data_size = clients_sizes[user_id]
+
         for _ in range(client_data_size):     
             class_label = np.random.choice(classes, p=dirichlet_probs[user_id])
 

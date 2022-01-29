@@ -1,5 +1,6 @@
 from copy import deepcopy
 import random
+import numpy
 
 import torch
 import torch.nn as nn
@@ -23,6 +24,7 @@ class Server:
         self.num_classes = len(self.trainset.classes)
         self.class_priors = get_class_priors(self.num_classes, self.trainset.targets)
         self.global_batch_size = data_config["global_batch_size"]
+        self.std_client_samples = data_config["std_client_samples"]
         self.IID = data_config["IID"]
         if not self.IID:
             self.alpha = data_config["alpha"]
@@ -42,10 +44,17 @@ class Server:
         self.fed_IR = fed_config["fed_IR"]
 
     def init_clients(self):
+        # Define each client training size using gaussian distribution
+        avg_train_size = len(self.trainset) / self.num_clients
+        clients_sizes = numpy.random.normal(avg_train_size, avg_train_size * self.std_client_samples, self.num_clients)
+        delta = self.trainset_size - numpy.sum(clients_sizes) # distribute difference over all clients
+        clients_sizes = (clients_sizes + delta/len(clients_sizes)).astype(int)     
+        print("Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes), sep="\t")   
+
         if self.IID:
             indexes = indexes_split_IID(self.num_clients, self.trainset_size)
         else:
-            indexes = indexes_split_NON_IID(self.num_clients, self.num_classes, self.alpha, self.trainset)
+            indexes = indexes_split_NON_IID(self.num_clients, self.num_classes, self.alpha, self.trainset, clients_sizes)
 
         for i in range(self.num_clients):
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
