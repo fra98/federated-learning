@@ -99,12 +99,57 @@ def main_cifar_split_class_balanced():
     print_stats(map)
 
 
+def main_cifar_split_class_unbalanced():
+    map = np.zeros((NUM_CLIENTS, NUM_CLASSES), dtype=np.int32)
+
+    std_client_samples = 0.2
+
+    avg_train_size = len(trainset) / NUM_CLIENTS
+    clients_sizes = np.random.normal(avg_train_size, avg_train_size * std_client_samples, NUM_CLIENTS)
+    delta = len(trainset) - np.sum(clients_sizes) # distribute difference over all clients
+    clients_sizes = (clients_sizes + delta/len(clients_sizes)).astype(int)     
+
+    # Dirichlet probability distribution -> 2D matrix, shape: (NUM_CLIENTS, NUM_CLASSES)
+    dirichlet_probs = dirichlet_probabilities(NUM_CLASSES, NUM_CLIENTS, ALPHA)
+
+    offset_class = np.zeros(NUM_CLASSES, dtype=np.int32)
+    users_indexes = []
+    for _ in range(NUM_CLIENTS):
+        users_indexes.append([])
+
+    shuffled_classes = deepcopy(classes_IDs)
+    for user_id in range(NUM_CLIENTS):
+        client_data_size = clients_sizes[user_id]
+
+        for _ in range(client_data_size):     
+            class_label = np.random.choice(classes_IDs, p=dirichlet_probs[user_id])
+
+            if offset_class[class_label] >= num_samples_per_class:
+                random.shuffle(shuffled_classes)
+                for c in shuffled_classes:
+                    if offset_class[c] < num_samples_per_class:
+                        class_label = c
+
+            pos = num_samples_per_class * class_label + offset_class[class_label]  # base + offset
+            image_id = sorted_indexes[pos]
+            users_indexes[user_id].append(image_id)
+
+            offset_class[class_label] += 1
+            map[user_id][class_label] += 1
+
+    print_stats(map)
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 3:
         ALPHA = float(sys.argv[1])
-        CB = bool(int((sys.argv[2])))
+        V = int((sys.argv[2]))
 
-    if CB:
+    print("value:", V)
+
+    if V == 1:
         main_cifar_split_class_balanced()
+    elif V == 2:
+        main_cifar_split_class_unbalanced()
     else :
         main_cifar_split()
