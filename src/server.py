@@ -80,6 +80,7 @@ class Server:
                                                random.gauss(self.avg_clients_rounds * self.num_clients,
                                                             self.std_clients_rounds * self.num_clients)), 1))
             selected_clients = random.sample(self.clients, num_selected_clients)
+            selected_clients.sort(key=lambda x: x.id)
             num_samples = sum(c.trainset_size for c in selected_clients)
 
             if self.std_clients_rounds != 0:

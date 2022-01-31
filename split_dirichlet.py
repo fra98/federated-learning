@@ -145,8 +145,6 @@ if __name__ == '__main__':
         ALPHA = float(sys.argv[1])
         V = int((sys.argv[2]))
 
-    print("value:", V)
-
     if V == 1:
         main_cifar_split_class_balanced()
     elif V == 2:
