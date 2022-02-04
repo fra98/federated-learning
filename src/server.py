@@ -45,9 +45,9 @@ class Server:
         self.fed_IR = fed_config["fed_IR"]
         self.fed_VC = fed_config["fed_VC"]
         if self.fed_VC:
-            self.num_virtual_clients = fed_config["num_virtual_clients"]
+            self.virtual_client_size = self.trainset_size // self.num_clients
         else:
-            self.num_virtual_clients = None
+            self.virtual_client_size = None
 
     def init_clients(self):
         # Define each client training size using gaussian distribution
@@ -66,7 +66,7 @@ class Server:
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
             client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
                             model_config=self.model_config, optim_config=self.optim_config,
-                            server_class_priors=self.class_priors, num_virtual_clients=self.num_virtual_clients)
+                            server_class_priors=self.class_priors, virtual_client_size=self.virtual_client_size)
             self.clients.append(client)
 
     def run_training(self, print_acc=True):
@@ -115,14 +115,14 @@ class Server:
 
             # do the average
             for client in selected_clients:
+                if self.fed_VC:
+                    # for Fed_VC we use every time the same total amount of sample per client
+                    weight = 1 / len(selected_clients)
+                else:
+                    weight = client.trainset_size / num_samples
+                
                 for key in self.global_net.state_dict().keys():
                     tensor = client.net.state_dict()[key]
-                    if self.fed_VC:
-                        # for Fed_VC we use every time the same total amount of sample per client
-                        weight = 1 / len(selected_clients)
-                    else:
-                        weight = client.trainset_size / num_samples
-
                     self.global_net.state_dict()[key] += weight * tensor
 
             print("[AFTER AVG]", end='\t')

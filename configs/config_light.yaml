@@ -23,5 +23,4 @@ fed_config:
   client_batch_size: 64 
   local_epochs: 3
   fed_IR: True
-  num_virtual_clients: 4096
   fed_VC: True

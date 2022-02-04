@@ -9,8 +9,7 @@ from .utils import run_accuracy, get_class_priors
 
 class Client:
     def __init__(self, id, device, local_epochs, batch_size, trainset, model_config, optim_config,
-                 server_class_priors=None,
-                 num_virtual_clients=None):
+                 server_class_priors=None, virtual_client_size=None):
         self.id = id
         self.device = device
         self.local_epochs = local_epochs
@@ -26,7 +25,7 @@ class Client:
         self.class_priors = get_class_priors(self.num_classes, self.targets, self.device)
         self.server_class_priors = server_class_priors
         self.weight = server_class_priors / self.class_priors
-        self.num_virtual_clients = num_virtual_clients
+        self.virtual_client_size = virtual_client_size
 
         # MODEL CONFIGURATION
         self.model_config = model_config
@@ -36,7 +35,7 @@ class Client:
     def client_update(self, state_dict, drop_last=False, fed_IR=False, print_acc=True, fed_VC=False):
 
         if fed_VC:
-            trainset = fed_vc_get_random_subset(self.trainset, self.num_virtual_clients)
+            trainset = fed_vc_get_random_subset(self.trainset, self.virtual_client_size)
         else:
             trainset = self.trainset
 
@@ -106,12 +105,12 @@ class Client:
                             criterion=criterion)
 
 
-def fed_vc_get_random_subset(set, num_virtual_clients):
+def fed_vc_get_random_subset(set, virtual_client_size):
     set_size = len(set)
     replace = False
-    if num_virtual_clients > set_size:
+    if virtual_client_size > set_size:
         replace = True
-    
-    indexes = np.random.choice(set.indices, num_virtual_clients, replace=replace)
+
+    indexes = np.random.choice(set.indices, virtual_client_size, replace=replace)
 
     return torch.utils.data.Subset(set.dataset, indexes)
