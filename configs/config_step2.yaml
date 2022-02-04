@@ -3,6 +3,7 @@ data_config:
   IID: False
   alpha: 10
   global_batch_size: 64
+  std_client_samples: 0.2
 ---
 model_config:
   net: "LeNet5_MOD"
@@ -22,3 +23,6 @@ fed_config:
   client_batch_size: 64 
   local_epochs: 3
   fed_IR: False
+  num_virtual_clients: 4096
+  fed_VC: False
+

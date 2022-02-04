@@ -3,6 +3,7 @@ data_config:
   IID: False
   alpha: 5
   global_batch_size: 64
+  std_client_samples: 0.2
 ---
 model_config:
   net: "LeNet5_MOD_LIGHT"
