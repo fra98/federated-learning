@@ -9,8 +9,8 @@ import torch.optim as optim
 
 from .client import Client
 from .models import *
-from .utils import get_class_priors, load_cifar, run_accuracy, indexes_split_IID, indexes_split_NON_IID
-
+from .utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
+from .splits import indexes_split_IID, indexes_split_NON_IID
 
 class Server:
     def __init__(self, device, data_config, model_config, optim_config, fed_config):
@@ -51,14 +51,11 @@ class Server:
 
     def init_clients(self):
         # Define each client training size using gaussian distribution
-        avg_train_size = len(self.trainset) / self.num_clients
-        clients_sizes = numpy.random.normal(avg_train_size, avg_train_size * self.std_client_samples, self.num_clients)
-        delta = self.trainset_size - numpy.sum(clients_sizes) # distribute difference over all clients
-        clients_sizes = (clients_sizes + delta/len(clients_sizes)).astype(int)     
+        clients_sizes = generate_clients_sizes(self.trainset_size, self.num_clients, self.std_client_samples)
         print("Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes), sep="\t")   
 
         if self.IID:
-            indexes = indexes_split_IID(self.num_clients, self.trainset_size)
+            indexes = indexes_split_IID(self.num_clients, self.num_classes, self.trainset, clients_sizes)
         else:
             indexes = indexes_split_NON_IID(self.num_clients, self.num_classes, self.alpha, self.trainset, clients_sizes)
 
@@ -68,6 +65,7 @@ class Server:
                             model_config=self.model_config, optim_config=self.optim_config,
                             server_class_priors=self.class_priors, virtual_client_size=self.virtual_client_size)
             self.clients.append(client)
+
 
     def run_training(self, print_acc=True):
         if len(self.clients) == 0:
@@ -93,8 +91,8 @@ class Server:
                 clients_weight = numpy.ones((len(self.clients)))
             clients_weight = clients_weight / numpy.sum(clients_weight)
 
-            selected_clients = numpy.random.choice(self.clients, num_selected_clients, replace=False, p=clients_weight)
-            # selected_clients.sort(key=lambda x: x.id)
+            selected_clients = numpy.random.choice(self.clients, num_selected_clients, replace=False, p=clients_weight).tolist()
+            selected_clients.sort(key=lambda x: x.id)
             num_samples = sum(c.trainset_size for c in selected_clients)
 
             if self.std_clients_rounds != 0:
