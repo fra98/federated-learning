@@ -93,7 +93,7 @@ class Server:
                 clients_weight = numpy.ones((len(self.clients)))
             clients_weight = clients_weight / numpy.sum(clients_weight)
 
-            selected_clients = numpy.random.choice(self.clients, num_selected_clients, p=clients_weight)
+            selected_clients = numpy.random.choice(self.clients, num_selected_clients, replace=False, p=clients_weight)
             # selected_clients.sort(key=lambda x: x.id)
             num_samples = sum(c.trainset_size for c in selected_clients)
 
