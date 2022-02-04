@@ -1,6 +1,7 @@
 from copy import deepcopy
 import random
 import numpy
+import numpy as np
 
 import torch
 import torch.nn as nn
@@ -42,6 +43,11 @@ class Server:
         self.client_batch_size = fed_config["client_batch_size"]
         self.local_epochs = fed_config["local_epochs"]
         self.fed_IR = fed_config["fed_IR"]
+        self.fed_VC = fed_config["fed_VC"]
+        if self.fed_VC:
+            self.num_virtual_clients = fed_config["num_virtual_clients"]
+        else:
+            self.num_virtual_clients = None
 
     def init_clients(self):
         # Define each client training size using gaussian distribution
@@ -60,7 +66,7 @@ class Server:
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
             client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
                             model_config=self.model_config, optim_config=self.optim_config,
-                            server_class_priors=self.class_priors)
+                            server_class_priors=self.class_priors, num_virtual_clients=self.num_virtual_clients)
             self.clients.append(client)
 
     def run_training(self, print_acc=True):
@@ -79,8 +85,16 @@ class Server:
             num_selected_clients = int(max(min(self.num_clients,
                                                random.gauss(self.avg_clients_rounds * self.num_clients,
                                                             self.std_clients_rounds * self.num_clients)), 1))
-            selected_clients = random.sample(self.clients, num_selected_clients)
-            selected_clients.sort(key=lambda x: x.id)
+            if self.fed_VC:
+                clients_weight = numpy.zeros((len(self.clients)))
+                for i in range(len(self.clients)):
+                    clients_weight[i] = self.clients[i].trainset_size
+            else:
+                clients_weight = numpy.ones((len(self.clients)))
+            clients_weight = clients_weight / numpy.sum(clients_weight)
+
+            selected_clients = numpy.random.choice(self.clients, num_selected_clients, p=clients_weight)
+            # selected_clients.sort(key=lambda x: x.id)
             num_samples = sum(c.trainset_size for c in selected_clients)
 
             if self.std_clients_rounds != 0:
@@ -88,7 +102,7 @@ class Server:
 
             # Run update on each client
             for client in selected_clients:
-                client.client_update(state_t, fed_IR=self.fed_IR, print_acc=print_acc)
+                client.client_update(state_t, fed_IR=self.fed_IR, print_acc=print_acc, fed_VC=self.fed_VC)
 
             if print_acc:
                 print("[BEFORE AVG]", end='\t')
@@ -103,7 +117,12 @@ class Server:
             for client in selected_clients:
                 for key in self.global_net.state_dict().keys():
                     tensor = client.net.state_dict()[key]
-                    weight = client.trainset_size / num_samples
+                    if self.fed_VC:
+                        # for Fed_VC we use every time the same total amount of sample per client
+                        weight = 1 / len(selected_clients)
+                    else:
+                        weight = client.trainset_size / num_samples
+
                     self.global_net.state_dict()[key] += weight * tensor
 
             print("[AFTER AVG]", end='\t')

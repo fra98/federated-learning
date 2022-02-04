@@ -15,10 +15,12 @@ optim_config:
   weight_decay: 0.0004
 ---
 fed_config:
-  num_clients: 4
+  num_clients: 6
   avg_clients_rounds: 1 
   std_clients_rounds: 0
   num_rounds: 4
   client_batch_size: 64 
-  local_epochs: 2
+  local_epochs: 3
   fed_IR: True
+  num_virtual_clients: 4096
+  fed_VC: True

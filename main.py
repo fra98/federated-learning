@@ -33,7 +33,9 @@ STD_CLIENTS_ROUND = 0  # Std-dev of number of clients per round (0 for constant 
 NUM_ROUNDS = 2
 CLIENT_BATCH_SIZE = 64
 LOCAL_EPOCHS = 2
-FED_IR = False
+FED_IR = True
+FED_VC = True
+NUM_VIRTUAL_CLIENTS = 10000
 
 
 # SETUP DICTIONARIES 
@@ -64,7 +66,9 @@ fed_config = {
     'num_rounds': NUM_ROUNDS,
     'client_batch_size': CLIENT_BATCH_SIZE,
     'local_epochs': LOCAL_EPOCHS,
-    'fed_IR': FED_IR
+    'fed_IR': FED_IR,
+    'num_virtual_clients': NUM_VIRTUAL_CLIENTS,
+    'fed_VC': FED_VC
 }
 
 
