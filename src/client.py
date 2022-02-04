@@ -108,10 +108,10 @@ class Client:
 
 def fed_vc_get_random_subset(set, num_virtual_clients):
     set_size = len(set)
-    start_indexes = np.arange(set_size)
     replace = False
-    if num_virtual_clients>set_size:
+    if num_virtual_clients > set_size:
         replace = True
-    indexes = np.random.choice(start_indexes, num_virtual_clients, replace=replace)
-    return torch.utils.data.Subset(set, indexes)
+    
+    indexes = np.random.choice(set.indices, num_virtual_clients, replace=replace)
 
+    return torch.utils.data.Subset(set.dataset, indexes)
