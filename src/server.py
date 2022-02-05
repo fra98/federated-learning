@@ -56,7 +56,6 @@ class Server:
         self.logger.log("Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes), sep="\t")
 
         if self.IID:
-            indexes = indexes_split_IID(self.num_clients, self.trainset_size)
             indexes = indexes_split_IID(self.num_clients, self.num_classes, self.trainset, clients_sizes)
         else:
             indexes = indexes_split_NON_IID(self.num_clients, self.num_classes, self.alpha, self.trainset, clients_sizes)
