@@ -70,14 +70,19 @@ class Server:
             self.clients.append(client)
 
 
-    def run_training(self, print_acc=True):
+    def run_training(self, state_dict=None, round_num=0, print_acc=True):
         if len(self.clients) == 0:
             self.init_clients()
 
         self.global_net.to(self.device)
 
-        for t in range(self.num_rounds):
-            self.logger.log(f"ROUND {t+1}")
+        if state_dict is not None:
+            self.global_net.load_state_dict(state_dict)
+            self.global_net.eval()
+
+        for _ in range(self.num_rounds):
+            round_num += 1
+            self.logger.log(f"ROUND {round_num}")
 
             # Save state at round t
             state_t = deepcopy(self.global_net.state_dict())

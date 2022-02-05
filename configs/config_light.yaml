@@ -3,7 +3,7 @@ data_config:
   IID: False
   alpha: 5
   global_batch_size: 64
-  std_client_samples: 0.2
+  std_client_samples: 0
 ---
 model_config:
   net: "LeNet5_MOD_LIGHT"
@@ -16,12 +16,12 @@ optim_config:
   weight_decay: 0.0004
 ---
 fed_config:
-  num_clients: 6
+  num_clients: 3
   avg_clients_rounds: 1 
   std_clients_rounds: 0
-  num_rounds: 4
+  num_rounds: 2
   client_batch_size: 64 
-  local_epochs: 3
+  local_epochs: 2
 
   fed_IR: True
-  fed_VC: True
+  fed_VC: False
