@@ -35,7 +35,6 @@ CLIENT_BATCH_SIZE = 64
 LOCAL_EPOCHS = 2
 FED_IR = True
 FED_VC = True
-NUM_VIRTUAL_CLIENTS = 10000
 
 
 # SETUP DICTIONARIES 
@@ -67,7 +66,6 @@ fed_config = {
     'client_batch_size': CLIENT_BATCH_SIZE,
     'local_epochs': LOCAL_EPOCHS,
     'fed_IR': FED_IR,
-    'num_virtual_clients': NUM_VIRTUAL_CLIENTS,
     'fed_VC': FED_VC
 }
 

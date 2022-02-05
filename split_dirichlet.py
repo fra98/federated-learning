@@ -31,7 +31,12 @@ def print_stats(map):
     print("Total size")
     print(map.sum())
     print("Percentage of classes for each user")
-    print(100 * map / map.sum(axis=1).reshape(NUM_CLIENTS, 1))
+    perc_classes_users = 100 * map / map.sum(axis=1).reshape(NUM_CLIENTS, 1)
+    print(perc_classes_users)
+    print("Class percentage std dev for each client")
+    print(np.std(perc_classes_users, axis=1))
+    print("Class percentage total std dev")
+    print(round(np.std(np.std(perc_classes_users, axis=1) / np.sum(perc_classes_users, axis=1)), 3))
 
 
 def dirichlet_probabilities(num_classes, num_clients, alpha):

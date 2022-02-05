@@ -64,56 +64,12 @@ def run_accuracy(device, dataset, batch_size, net, criterion):
     return val_accuracy, avg_val_loss
 
 
-def indexes_split_IID(num_clients, trainset_size):
-    # NOTE: this split assumes equal class distribution -> true for cifar
-    indexes = []
-    for i in range(num_clients):
-        indexes.append(list(range(i, trainset_size, num_clients)))
-    return indexes
-
-
-def indexes_split_NON_IID(num_clients, num_classes, alpha, dataset, clients_sizes):  # class-balanced
-    # NOTE: this split assumes equal class distribution -> true for cifar
-    client_data_size = len(dataset) // num_clients
-    num_samples_per_class = len(dataset) // num_classes
-    classes = [i for i in range(num_classes)]
-
-    # Indexes sorted by class label 
-    sorted_indexes = np.argsort(dataset.targets)
-
-    # Priors probabilities of each class
-    priors = (1/num_classes) * np.ones(num_classes)
-
-    # Dirichlet's distribution probabilities -> 2D matrix, shape: (NUM_CLIENTS, NUM_CLASSES)
-    dirichlet_probs = np.random.dirichlet(alpha * priors, num_clients)
-
-    indexes = []
-    for _ in range(num_clients):
-        indexes.append([])
-
-    offsets_class = np.zeros(num_classes, dtype=np.int32)
-    shuffled_classes = deepcopy(classes)
-    for user_id in range(num_clients):   
-        # important, now each client has a different size 
-        client_data_size = clients_sizes[user_id]
-
-        for _ in range(client_data_size):     
-            class_label = np.random.choice(classes, p=dirichlet_probs[user_id])
-
-            # check if selected class is available. If not randomly select another one  
-            if offsets_class[class_label] >= num_samples_per_class:
-                random.shuffle(shuffled_classes)
-                for c in shuffled_classes:
-                    if offsets_class[c] < num_samples_per_class:
-                        class_label = c
-
-            pos = num_samples_per_class * class_label + offsets_class[class_label]  # base + offset
-            image_id = sorted_indexes[pos]
-            indexes[user_id].append(image_id)
-
-            offsets_class[class_label] += 1
-
-    return indexes
+def generate_clients_sizes(dataset_size, num_clients, std_client_samples):
+    avg_train_size = dataset_size / num_clients
+    clients_sizes = np.random.normal(avg_train_size, avg_train_size * std_client_samples, num_clients)
+    delta = dataset_size - np.sum(clients_sizes) # distribute difference over all clients
+    clients_sizes = np.around((clients_sizes + delta/len(clients_sizes))).astype(int)  
+    return clients_sizes
 
 
 def get_class_priors(num_classes, labels, device='cpu'):
