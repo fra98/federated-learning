@@ -9,7 +9,7 @@ from .utils import run_accuracy, get_class_priors
 
 class Client:
     def __init__(self, id, device, local_epochs, batch_size, trainset, model_config, optim_config,
-                 server_class_priors=None, virtual_client_size=None):
+                 server_class_priors=None, virtual_client_size=None, logger=None):
         self.id = id
         self.device = device
         self.local_epochs = local_epochs
@@ -26,6 +26,7 @@ class Client:
         self.server_class_priors = server_class_priors
         self.weight = server_class_priors / self.class_priors
         self.virtual_client_size = virtual_client_size
+        self.logger = logger
 
         # MODEL CONFIGURATION
         self.model_config = model_config
@@ -92,8 +93,7 @@ class Client:
             if print_acc:
                 avg_loss = epoch_loss / iter_per_epoch
                 train_accuracy = (num_corr_train / train_samples) * 100
-                print(
-                    f'Client {self.id} -> Train: Epoch = {epoch + 1} | Loss = {avg_loss:.3f} | Accuracy = {train_accuracy:.3f}')
+                self.logger.log(f'Client {self.id} -> Train: Epoch = {epoch + 1} | Loss = {avg_loss:.3f} | Accuracy = {train_accuracy:.3f}')
 
     def train_accuracy(self, state_dict):
         self.net.to(self.device)

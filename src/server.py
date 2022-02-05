@@ -13,7 +13,7 @@ from .utils import get_class_priors, load_cifar, run_accuracy, indexes_split_IID
 
 
 class Server:
-    def __init__(self, device, data_config, model_config, optim_config, fed_config):
+    def __init__(self, device, data_config, model_config, optim_config, fed_config, logger=None):
         self.device = device
         self.clients = []
 
@@ -27,6 +27,7 @@ class Server:
         self.global_batch_size = data_config["global_batch_size"]
         self.std_client_samples = data_config["std_client_samples"]
         self.IID = data_config["IID"]
+        self.logger = logger
         if not self.IID:
             self.alpha = data_config["alpha"]
 
@@ -54,8 +55,8 @@ class Server:
         avg_train_size = len(self.trainset) / self.num_clients
         clients_sizes = numpy.random.normal(avg_train_size, avg_train_size * self.std_client_samples, self.num_clients)
         delta = self.trainset_size - numpy.sum(clients_sizes) # distribute difference over all clients
-        clients_sizes = (clients_sizes + delta/len(clients_sizes)).astype(int)     
-        print("Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes), sep="\t")   
+        clients_sizes = (clients_sizes + delta/len(clients_sizes)).astype(int)
+        self.logger.log("Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes), sep="\t")
 
         if self.IID:
             indexes = indexes_split_IID(self.num_clients, self.trainset_size)
@@ -76,7 +77,7 @@ class Server:
         self.global_net.to(self.device)
 
         for t in range(self.num_rounds):
-            print(f"ROUND {t+1}")
+            self.logger.log(f"ROUND {t+1}")
 
             # Save state at round t
             state_t = deepcopy(self.global_net.state_dict())
@@ -98,14 +99,14 @@ class Server:
             num_samples = sum(c.trainset_size for c in selected_clients)
 
             if self.std_clients_rounds != 0:
-                print(f"{num_selected_clients} clients selected")
+                self.logger.log(f"{num_selected_clients} clients selected")
 
             # Run update on each client
             for client in selected_clients:
                 client.client_update(state_t, fed_IR=self.fed_IR, print_acc=print_acc, fed_VC=self.fed_VC)
 
             if print_acc:
-                print("[BEFORE AVG]", end='\t')
+                self.logger.log("[BEFORE AVG]", end='\t')
                 self.run_weighted_clients_accuracy()
 
             # AVERAGING
@@ -125,7 +126,7 @@ class Server:
                     tensor = client.net.state_dict()[key]
                     self.global_net.state_dict()[key] += weight * tensor
 
-            print("[AFTER AVG]", end='\t')
+            self.logger.log("[AFTER AVG]", end='\t')
             self.run_testing(train=True)
 
     def run_weighted_clients_accuracy(self, state_dict=None):
@@ -137,7 +138,7 @@ class Server:
             accuracy += weight * client_accuracy
             loss += weight * client_loss
 
-        print(f'Weighted Clients -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+        self.logger.log(f'Weighted Clients -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
 
     def run_testing(self, train=False):
         if train:
@@ -151,6 +152,6 @@ class Server:
                                       criterion=criterion)
 
         if train:
-            print(f'Server -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+            self.logger.log(f'Server -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
         else:
-            print(f'Server -> Test: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+            self.logger.log(f'Server -> Test: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
