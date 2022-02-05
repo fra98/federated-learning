@@ -6,7 +6,6 @@ from src.logger_manager import LoggerHandler
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 LOG_PATH = ""
-LOG_NAME = ""
 
 if __name__ == "__main__":    
     print(DEVICE)
