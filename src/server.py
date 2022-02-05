@@ -64,7 +64,8 @@ class Server:
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
             client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
                             model_config=self.model_config, optim_config=self.optim_config,
-                            server_class_priors=self.class_priors, virtual_client_size=self.virtual_client_size)
+                            server_class_priors=self.class_priors, virtual_client_size=self.virtual_client_size,
+                            logger=self.logger)
             self.clients.append(client)
 
 

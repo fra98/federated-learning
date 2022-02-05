@@ -24,7 +24,7 @@ if __name__ == "__main__":
     fed_config = configs[3]["fed_config"]
 
     server = Server(DEVICE, data_config=data_config, model_config=model_config, optim_config=optim_config,
-                    fed_config=fed_config, logger = loggerManager)
+                    fed_config=fed_config, logger=loggerManager)
     server.init_clients()
 
     # TRAINING
