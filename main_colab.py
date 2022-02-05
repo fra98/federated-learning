@@ -50,6 +50,6 @@ if __name__ == "__main__":
     # Saving current model
     round_num += server.num_rounds
     torch.save(server.global_net.state_dict(), NET_PATH)
-    torch.save(server.global_net.state_dict(), f'{BASE_PATH}/server_{round_num}.pth')
+    torch.save(server.global_net.state_dict(), f'{BASE_PATH}/server_{round_num:03}.pth')
     with open(COUNTER_PATH, 'w') as f:
         f.write(str(round_num))
