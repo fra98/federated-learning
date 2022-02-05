@@ -53,7 +53,8 @@ class Server:
     def init_clients(self):
         # Define each client training size using gaussian distribution
         clients_sizes = generate_clients_sizes(self.trainset_size, self.num_clients, self.std_client_samples)
-        self.logger.log("Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes), sep="\t")
+        log = f"Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes)
+        self.logger.log(log)
 
         if self.IID:
             indexes = indexes_split_IID(self.num_clients, self.num_classes, self.trainset, clients_sizes)
@@ -98,14 +99,16 @@ class Server:
             num_samples = sum(c.trainset_size for c in selected_clients)
 
             if self.std_clients_rounds != 0:
-                self.logger.log(f"{num_selected_clients} clients selected")
+                log = f"{num_selected_clients} clients selected"
+                self.logger.log(log)
 
             # Run update on each client
             for client in selected_clients:
                 client.client_update(state_t, fed_IR=self.fed_IR, print_acc=print_acc, fed_VC=self.fed_VC)
 
             if print_acc:
-                self.logger.log("[BEFORE AVG]", end='\t')
+                log = f"[BEFORE AVG]"
+                self.logger.log(log)
                 self.run_weighted_clients_accuracy()
 
             # AVERAGING
@@ -120,12 +123,12 @@ class Server:
                     weight = 1 / len(selected_clients)
                 else:
                     weight = client.trainset_size / num_samples
-                
+
                 for key in self.global_net.state_dict().keys():
                     tensor = client.net.state_dict()[key]
                     self.global_net.state_dict()[key] += weight * tensor
 
-            self.logger.log("[AFTER AVG]", end='\t')
+            self.logger.log("[AFTER AVG]")
             self.run_testing(train=True)
 
     def run_weighted_clients_accuracy(self, state_dict=None):

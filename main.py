@@ -1,6 +1,7 @@
 import torch
 
-from src.server import Server 
+from src.server import Server
+from src.logger_manager import LoggerHandler
 
 # PARAMETERS 
 
@@ -69,12 +70,17 @@ fed_config = {
     'fed_VC': FED_VC
 }
 
+LOG_PATH="./"
 
 if __name__ == "__main__":
     print(DEVICE)
 
+    loggerManager = LoggerHandler(LOG_PATH)
+    loggerManager.create_logger("main", "main.txt")
+    loggerManager.set_default_logger("main")
     server = Server(DEVICE, data_config=data_config, model_config=model_config, optim_config=optim_config,
-                    fed_config=fed_config)
+                    fed_config=fed_config, logger=loggerManager)
+
     server.init_clients()
 
     # TRAINING

@@ -23,5 +23,5 @@ fed_config:
   client_batch_size: 64 
   local_epochs: 3
   fed_IR: False
-  fed_VC: False
+  fed_VC: True
 
