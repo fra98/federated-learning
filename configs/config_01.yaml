@@ -1,9 +1,9 @@
 data_config:
   dataset_name: "CIFAR10"
-  IID:
-  alpha:
+  IID: false
+  alpha: 10
   global_batch_size: 64
-  std_client_samples:
+  std_client_samples: 0
 ---
 model_config:
   net: "LeNet5_MOD"
@@ -17,11 +17,11 @@ optim_config:
 ---
 fed_config:
   num_clients: 50
-  avg_clients_rounds:
-  std_clients_rounds:
+  avg_clients_rounds: 0.5
+  std_clients_rounds: 0
   num_rounds: 15
-  client_batch_size: 64 
-  local_epochs:
-  fed_IR:
-  fed_VC:
+  client_batch_size: 64
+  local_epochs: 1
+  fed_IR: false
+  fed_VC: false
 
