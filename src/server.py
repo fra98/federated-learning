@@ -133,8 +133,9 @@ class Server:
                     tensor = client.net.state_dict()[key]
                     self.global_net.state_dict()[key] += weight * tensor
 
-            self.logger.log("[AFTER AVG]")
-            self.run_testing(train=True)
+            if print_acc:
+                self.logger.log("[AFTER AVG]")
+                self.run_testing(train=True)
 
     def run_weighted_clients_accuracy(self, state_dict=None):
         accuracy = 0

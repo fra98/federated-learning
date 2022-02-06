@@ -23,7 +23,7 @@ def print_stats(map):
 def main():
     map = np.zeros((100, NUM_CLASSES), dtype=np.int64)
 
-    with open(f"./CIFAR/CIFAR{NUM_CLASSES}_splits/federated_train_alpha_{ALPHA:.2f}.csv", "r") as f:
+    with open(f"./utility/CIFAR_google/CIFAR{NUM_CLASSES}_splits/federated_train_alpha_{ALPHA:.2f}.csv", "r") as f:
         reader = csv.reader(f)
         next(reader)    # header
         for line in reader:
