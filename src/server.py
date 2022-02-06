@@ -162,3 +162,5 @@ class Server:
             self.logger.log(f'Server -> Train: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
         else:
             self.logger.log(f'Server -> Test: Loss {loss:.3f} | Accuracy = {accuracy:.3f}')
+        
+        return accuracy, loss

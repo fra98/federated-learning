@@ -12,7 +12,10 @@ class LoggerHandler:
     def create_logger(self, logger_name, file_name):
         if logger_name not in self.loggers.keys():
             handler = logging.FileHandler(os.path.join(self.path, file_name))
-            handler.setFormatter(self.formatter)
+            if file_name.endswith('.log'):
+                handler.setFormatter(self.formatter)
+            else:
+                handler.setFormatter(logging.Formatter('%(message)s'))
             logger = logging.getLogger(logger_name)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
