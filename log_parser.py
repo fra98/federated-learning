@@ -5,9 +5,10 @@ BASE_PATH = "logs/"
 
 LOGS = ["config_01.log", "config_02.log", "config_03.log",
         "config_04.log", "config_05.log", "config_06.log",
-        "config_07.log", "config_08.log", "config_09.log"]
-
-STEP = 15
+        "config_07.log", "config_08.log", "config_09.log",
+        "config_10.log", "config_11.log", "config_12.log",
+        "config_13.log", "config_14.log", "config_15.log",
+        "config_16.log", "config_17.log", "config_18.log"]
 
 vect_train_acc = []
 vect_train_loss = []
@@ -52,31 +53,40 @@ if __name__ == '__main__':
         vect_test_acc.append(test_acc)
         vect_test_loss.append(test_loss)
 
-    for i in range(len(vect_train_acc)):
+    vet_rounds = []
+    
+    STEP = 15
+    for i in range(9):
         v = vect_train_acc[i]
         v = v[v > 0]
         v = v[STEP-1::STEP]
         vect_train_acc[i] = v
 
-    for i in range(len(vect_test_acc)):
-        v = vect_test_acc[i]
-        v = v[v > 0]
-        vect_test_acc[i] = v
+        s = vect_test_acc[i]
+        s = s[s > 0]
+        vect_test_acc[i] = s
 
-    assert len(vect_test_acc[0]) == len(vect_train_acc[0])
-    assert len(vect_test_acc[1]) == len(vect_train_acc[1])
-    assert len(vect_test_acc[2]) == len(vect_train_acc[2])
-    assert len(vect_test_acc[3]) == len(vect_train_acc[3])
-    assert len(vect_test_acc[4]) == len(vect_train_acc[4])
-    assert len(vect_test_acc[5]) == len(vect_train_acc[5])
-    assert len(vect_test_acc[6]) == len(vect_train_acc[6])
-    assert len(vect_test_acc[7]) == len(vect_train_acc[7])
-    assert len(vect_test_acc[8]) == len(vect_train_acc[8])
-
-    vet_rounds = []
-    for i in range(len(vect_train_acc)):
         rounds = np.arange(1, len(vect_train_acc[i])+1) * STEP
         vet_rounds.append(rounds)
+
+    
+    STEP = 5
+    for i in range(9, 19):
+        v = vect_train_acc[i]
+        v = v[v > 0]
+        vect_train_acc[i] = v
+
+        s = vect_test_acc[i]
+        s = s[s > 0]
+        vect_test_acc[i] = s
+
+        rounds = np.arange(1, len(vect_train_acc[i])+1) * STEP
+        vet_rounds.append(rounds)
+
+
+    for i in range(len(vect_test_acc)):
+        assert len(vect_test_acc[i]) == len(vect_train_acc[i])
+
 
     plt.figure()
     plt.legend()
@@ -94,6 +104,16 @@ if __name__ == '__main__':
     plt.plot(vet_rounds[7], vect_train_acc[7], label='train conf 8')
     plt.plot(vet_rounds[8], vect_train_acc[8], label='train conf 9')
 
+    plt.plot(vet_rounds[9], vect_train_acc[9], label='train conf 10')
+    plt.plot(vet_rounds[10], vect_train_acc[10], label='train conf 11')
+    plt.plot(vet_rounds[11], vect_train_acc[11], label='train conf 12')
+    plt.plot(vet_rounds[12], vect_train_acc[12], label='train conf 13')
+    plt.plot(vet_rounds[13], vect_train_acc[13], label='train conf 14')
+    plt.plot(vet_rounds[14], vect_train_acc[14], label='train conf 15')
+    plt.plot(vet_rounds[15], vect_train_acc[15], label='train conf 16')
+    plt.plot(vet_rounds[16], vect_train_acc[16], label='train conf 17')
+    plt.plot(vet_rounds[17], vect_train_acc[17], label='train conf 18')
+
     # Test
     plt.plot(vet_rounds[0], vect_test_acc[0], label='test conf 1')
     plt.plot(vet_rounds[1], vect_test_acc[1], label='test conf 2')
@@ -104,6 +124,16 @@ if __name__ == '__main__':
     plt.plot(vet_rounds[6], vect_test_acc[6], label='test conf 7')
     plt.plot(vet_rounds[7], vect_test_acc[7], label='test conf 8')
     plt.plot(vet_rounds[8], vect_test_acc[8], label='test conf 9')
+
+    plt.plot(vet_rounds[9], vect_test_acc[9], label='test conf 10')
+    plt.plot(vet_rounds[10], vect_test_acc[10], label='test conf 11')
+    plt.plot(vet_rounds[11], vect_test_acc[11], label='test conf 12')
+    plt.plot(vet_rounds[12], vect_test_acc[12], label='test conf 13')
+    plt.plot(vet_rounds[13], vect_test_acc[13], label='test conf 14')
+    plt.plot(vet_rounds[14], vect_test_acc[14], label='test conf 15')
+    plt.plot(vet_rounds[15], vect_test_acc[15], label='test conf 16')
+    plt.plot(vet_rounds[16], vect_test_acc[16], label='test conf 17')
+    plt.plot(vet_rounds[17], vect_test_acc[17], label='test conf 18')
 
     plt.legend(loc='lower right')
     plt.show()
