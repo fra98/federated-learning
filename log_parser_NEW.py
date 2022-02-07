@@ -8,14 +8,16 @@ LOGS_TRAIN = ["train_acc_01.txt", "train_acc_02.txt", "train_acc_03.txt",
               "train_acc_07.txt", "train_acc_08.txt", "train_acc_09.txt",
               "train_acc_10.txt", "train_acc_11.txt", "train_acc_12.txt",
               "train_acc_13.txt", "train_acc_14.txt", "train_acc_15.txt",
-              "train_acc_16.txt", "train_acc_17.txt", "train_acc_18.txt"]
+              "train_acc_16.txt", "train_acc_17.txt", "train_acc_18.txt",
+              "train_acc_19.txt"]
 
 LOGS_TEST = ["test_acc_01.txt", "test_acc_02.txt", "test_acc_03.txt",
              "test_acc_04.txt", "test_acc_05.txt", "test_acc_06.txt",
              "test_acc_07.txt", "test_acc_08.txt", "test_acc_09.txt",
              "test_acc_10.txt", "test_acc_11.txt", "test_acc_12.txt",
              "test_acc_13.txt", "test_acc_14.txt", "test_acc_15.txt",
-             "test_acc_16.txt", "test_acc_17.txt", "test_acc_18.txt"]
+             "test_acc_16.txt", "test_acc_17.txt", "test_acc_18.txt",
+             "test_acc_19.txt"]
 
 
 vect_train_rounds = []
