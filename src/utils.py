@@ -1,3 +1,4 @@
+from ast import Raise
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -6,7 +7,7 @@ import random
 from copy import deepcopy
 
 
-def load_cifar(name, train):
+def load_cifar(name, train, randomize=False):
     if name == 'CIFAR10':
         dataset = torchvision.datasets.CIFAR10
         mean = (0.49139968, 0.48215841, 0.44653091)
@@ -20,10 +21,14 @@ def load_cifar(name, train):
     else:
         raise NameError("Dataset not implemented")
 
-    if train:
+    if randomize == True and train == False:
+        raise NameError("Warning: Applying random transformations on testset")
+
+    if train and randomize:
         transform = transforms.Compose([
-            # transforms.RandomCrop(image_size, padding=4),
-            # transforms.RandomHorizontalFlip(),
+            transforms.RandomCrop(image_size, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomRotation(degrees=10, expand=False),
             transforms.ToTensor(),
             transforms.Normalize(mean=mean, std=std)
         ])
