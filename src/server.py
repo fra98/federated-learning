@@ -53,8 +53,7 @@ class Server:
     def init_clients(self):
         # Define each client training size using gaussian distribution
         clients_sizes = generate_clients_sizes(self.trainset_size, self.num_clients, self.std_client_samples)
-        log = f"Client samples sizes:", clients_sizes, "total:", numpy.sum(clients_sizes)
-        self.logger.log(log)
+        self.logger.log(f"Client samples sizes: {clients_sizes}, total: {numpy.sum(clients_sizes)}")
 
         if self.IID:
             indexes = indexes_split_IID(self.num_clients, self.num_classes, self.trainset, clients_sizes)
@@ -75,22 +74,18 @@ class Server:
             self.init_clients()
 
         self.global_net.to(self.device)
-
         if state_dict is not None:
             self.global_net.load_state_dict(state_dict)
-            self.global_net.eval()
+        self.global_net.train()     # when gloabal net does it train?
 
         for _ in range(self.num_rounds):
             round_num += 1
             self.logger.log(f"ROUND {round_num}")
 
-            # Save state at round t
+            # Save state at current round
             state_t = deepcopy(self.global_net.state_dict())
 
-            # Get the selected clients for this round
-            num_selected_clients = int(max(min(self.num_clients,
-                                               random.gauss(self.avg_clients_rounds * self.num_clients,
-                                                            self.std_clients_rounds * self.num_clients)), 1))
+            # Calculate clients weights based on how many samples they have                                                            
             if self.fed_VC:
                 clients_weight = numpy.zeros((len(self.clients)))
                 for i in range(len(self.clients)):
@@ -99,21 +94,24 @@ class Server:
                 clients_weight = numpy.ones((len(self.clients)))
             clients_weight = clients_weight / numpy.sum(clients_weight)
 
+            # Get the selected clients for this round
+            num_selected_clients = int(max(min(self.num_clients,
+                                               random.gauss(self.avg_clients_rounds * self.num_clients,
+                                                            self.std_clients_rounds * self.num_clients)), 1))
             selected_clients = numpy.random.choice(self.clients, num_selected_clients, replace=False, p=clients_weight).tolist()
             selected_clients.sort(key=lambda x: x.id)
-            num_samples = sum(c.trainset_size for c in selected_clients)
+            num_samples = sum(c.trainset_size for c in selected_clients)  # effective number of samples at current round
 
             if self.std_clients_rounds != 0:
-                log = f"{num_selected_clients} clients selected"
-                self.logger.log(log)
+                self.logger.log(f"{num_selected_clients} clients selected")
 
             # Run update on each client
             for client in selected_clients:
-                client.client_update(state_t, fed_IR=self.fed_IR, print_acc=print_acc, fed_VC=self.fed_VC)
+                client.client_update(state_t, fed_IR=self.fed_IR, fed_VC=self.fed_VC, print_acc=print_acc)
 
+            # Calculate weighted accuracy of all clients (after clients updating, BEFORE averaging)
             if print_acc:
-                log = f"[BEFORE AVG]"
-                self.logger.log(log)
+                self.logger.log("[BEFORE AVG]")
                 self.run_weighted_clients_accuracy()
 
             # AVERAGING
@@ -133,6 +131,7 @@ class Server:
                     tensor = client.net.state_dict()[key]
                     self.global_net.state_dict()[key] += weight * tensor
 
+            # Calculate weighted accuracy of all clients (after clients updating, AFTER averaging)
             if print_acc:
                 self.logger.log("[AFTER AVG]")
                 self.run_testing(train=True)

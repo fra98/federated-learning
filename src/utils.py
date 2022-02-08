@@ -1,4 +1,3 @@
-from ast import Raise
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -42,7 +41,6 @@ def load_cifar(name, train, randomize=False):
 
 
 def run_accuracy(device, dataset, batch_size, net, criterion): 
-    net.train(False)
     testloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=2)
 
     val_samples = len(dataset)
@@ -50,6 +48,7 @@ def run_accuracy(device, dataset, batch_size, net, criterion):
     val_loss_epoch = 0
     num_correct = 0
 
+    net.eval()
     with torch.no_grad():
         for data in testloader:
             # calculate outputs by running images through the network
