@@ -3,6 +3,21 @@ import torch.nn as nn
 import torch.nn.functional as f
 
 
+__models = ['LeNet5_MOD', 'LeNet5_MOD_LIGHT']
+
+def get_net(name, num_classes, BN=False, GN=False):
+    if name not in __models:
+        raise NameError('Net not found/implemented')
+    
+    model_str = name
+    if BN:
+        model_str = model_str + '_BN'
+    elif GN:
+        model_str = model_str + '_GN'
+    
+    return eval(model_str)(num_classes)
+            
+
 class LeNet5_MOD(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
