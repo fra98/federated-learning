@@ -129,7 +129,7 @@ class Server:
 
                 for key in self.global_net.state_dict().keys():
                     tensor = client.net.state_dict()[key]
-                    self.global_net.state_dict()[key] += weight * tensor
+                    self.global_net.state_dict()[key] += (weight * tensor).type(tensor.type())
 
             # Calculate weighted accuracy of all clients (after clients updating, AFTER averaging)
             if print_acc:
