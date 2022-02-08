@@ -45,6 +45,7 @@ class Client:
         # Init net with current weights
         self.net.to(self.device)
         self.net.load_state_dict(state_dict)
+        self.net.train()
 
         # Criterion and optimizer
         if fed_IR:

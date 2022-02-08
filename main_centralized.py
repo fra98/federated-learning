@@ -31,6 +31,7 @@ def run_training(net, criterion, optimizer, scheduler=None):
     else:
         train_samples = len(trainset)
 
+    net.train()
     for epoch in range(NUM_EPOCHS):  # loop over the dataset multiple times
         epoch_loss = 0
         num_corr_train = 0
@@ -48,7 +49,7 @@ def run_training(net, criterion, optimizer, scheduler=None):
             loss.backward()
             optimizer.step()
 
-            #compute the training accuracy 
+            # compute the training accuracy 
             _, predicted = torch.max(outputs.data, 1)
             num_corr_train += torch.sum(predicted == labels.data).data.item()
             step_loss = loss.data.item()
