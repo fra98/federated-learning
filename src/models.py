@@ -98,7 +98,7 @@ class LeNet5_MOD_GN(nn.Module):
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=(5, 5))
         self.gn1 = nn.GroupNorm(num_groups=8, num_channels=64)
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(in_channels=16, out_channels=64, kernel_size=(5, 5))
+        self.conv2 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(5, 5))
         self.gn2 = nn.GroupNorm(num_groups=8, num_channels=64)
         self.fc1 = nn.Linear(64 * 5 * 5, 384)
         self.fc2 = nn.Linear(384, 192)
