@@ -115,13 +115,14 @@ class Server:
                 self.run_weighted_clients_accuracy()
 
             # AVERAGING
-            # reset to 0 all global_net parameters
-            for key, value in self.global_net.state_dict().items():
-                if 'tracked' in key:
-                    continue
-                nn.init.zeros_(value)
+            # # reset to 0 all global_net parameters
+            # for key, value in self.global_net.state_dict().items():
+            #     if 'tracked' in key:
+            #         continue
+            #     nn.init.zeros_(value)
 
             # do the average
+            old_state = deepcopy(self.global_net.state_dict())
             for client in selected_clients:
                 if self.fed_VC:
                     # for Fed_VC we use every time the same total amount of sample per client
@@ -130,8 +131,10 @@ class Server:
                     weight = client.trainset_size / num_samples
 
                 for key in self.global_net.state_dict().keys():
-                    tensor = client.net.state_dict()[key]
-                    self.global_net.state_dict()[key] += (weight * tensor).type(tensor.type())
+                    old_tensor = old_state[key]
+                    new_tensor = client.net.state_dict()[key]
+                    delta = new_tensor - old_tensor
+                    self.global_net.state_dict()[key] += (weight * delta).type(old_tensor.type())
 
             # Calculate weighted accuracy of all clients (after clients updating, AFTER averaging)
             if print_acc:
