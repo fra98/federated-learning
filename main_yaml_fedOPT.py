@@ -1,7 +1,7 @@
 import torch
 import yaml
 
-from src.server import Server
+from src.fedOPT.server import Server
 from src.logger_manager import LoggerHandler
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
