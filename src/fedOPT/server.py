@@ -1,4 +1,3 @@
-@@ -1,188 +0,0 @@
 from copy import deepcopy
 import random
 import numpy
@@ -9,9 +8,9 @@ import torch.nn as nn
 import torch.optim as optim
 
 from .client import Client
-from .models import *
-from .utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
-from .splits import indexes_split_IID, indexes_split_NON_IID
+from ..models import *
+from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
+from ..splits import indexes_split_IID, indexes_split_NON_IID
 
 class Server:
     def __init__(self, device, data_config, model_config, optim_config, fed_config, logger=None):

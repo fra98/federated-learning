@@ -1,11 +1,11 @@
--import torch
+import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from copy import deepcopy
 
-from .models import *
-from .utils import run_accuracy, get_class_priors
+from ..models import *
+from ..utils import run_accuracy, get_class_priors
 
 
 class Client:
