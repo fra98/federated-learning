@@ -48,8 +48,6 @@ class Client:
         self.net.to(self.device)
         self.net.load_state_dict(state_dict)
         self.net.train()
-        self.net_updates = []
-
 
         # Criterion and optimizer
         if fed_IR:
@@ -58,6 +56,7 @@ class Client:
             criterion = eval(self.model_config["criterion"])()
         trainable_params = [p for p in self.net.parameters() if p.requires_grad]
         old_trainable_params = deepcopy(trainable_params)
+        self.net_updates = deepcopy(trainable_params)
         optimizer = eval(self.model_config["optimizer"])(trainable_params, lr=self.optim_config["lr"],
                                                          momentum=self.optim_config["momentum"],
                                                          weight_decay=self.optim_config["weight_decay"])
@@ -102,7 +101,7 @@ class Client:
                 self.logger.log(f'Client {self.id} -> Train: Epoch = {epoch + 1} | Loss = {avg_loss:.3f} | Accuracy = {train_accuracy:.3f}')
 
         for i in range(len(trainable_params)):
-            self.net_updates[i] = trainable_params[i] - old_trainable_params[i]
+            self.net_updates[i] = old_trainable_params[i] - trainable_params[i]
 
     def train_accuracy(self, state_dict):
         self.net.to(self.device)

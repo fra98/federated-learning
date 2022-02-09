@@ -398,3 +398,271 @@ Client samples sizes: [24813 25187], total: 50000
 ROUND 1
 Client 0 -> Train: Epoch = 1 | Loss = 1.792 | Accuracy = 38.230
 Client 0 -> Train: Epoch = 2 | Loss = 1.446 | Accuracy = 48.954
+Client samples sizes: [29855 20145], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.833 | Accuracy = 33.696
+Client 0 -> Train: Epoch = 2 | Loss = 1.461 | Accuracy = 47.580
+Client 1 -> Train: Epoch = 1 | Loss = 1.749 | Accuracy = 31.968
+Client 1 -> Train: Epoch = 2 | Loss = 1.320 | Accuracy = 49.700
+[BEFORE AVG]
+Client samples sizes: [24876 25124], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.852 | Accuracy = 32.750
+Client 0 -> Train: Epoch = 2 | Loss = 1.474 | Accuracy = 47.427
+Client 1 -> Train: Epoch = 1 | Loss = 1.667 | Accuracy = 36.165
+Client 1 -> Train: Epoch = 2 | Loss = 1.276 | Accuracy = 52.579
+[BEFORE AVG]
+Client samples sizes: [23116 26884], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.750 | Accuracy = 38.285
+Client 0 -> Train: Epoch = 2 | Loss = 1.410 | Accuracy = 49.740
+Client 1 -> Train: Epoch = 1 | Loss = 1.518 | Accuracy = 41.024
+Client 1 -> Train: Epoch = 2 | Loss = 1.106 | Accuracy = 58.072
+[BEFORE AVG]
+[AFTER AVG]
+Client samples sizes: [24900 25100], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.805 | Accuracy = 35.900
+Client 0 -> Train: Epoch = 2 | Loss = 1.430 | Accuracy = 48.952
+Client 1 -> Train: Epoch = 1 | Loss = 1.735 | Accuracy = 32.956
+Client 1 -> Train: Epoch = 2 | Loss = 1.288 | Accuracy = 51.992
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.305 | Accuracy = 10.000
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.812 | Accuracy = 35.799
+Client samples sizes: [25260 24740], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.752 | Accuracy = 39.834
+Client 0 -> Train: Epoch = 2 | Loss = 1.392 | Accuracy = 51.002
+Client 1 -> Train: Epoch = 1 | Loss = 1.705 | Accuracy = 35.897
+Client 1 -> Train: Epoch = 2 | Loss = 1.301 | Accuracy = 51.322
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.305 | Accuracy = 10.026
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.758 | Accuracy = 39.719
+Client 0 -> Train: Epoch = 2 | Loss = 1.389 | Accuracy = 51.675
+Client samples sizes: [24416 25584], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.657 | Accuracy = 43.488
+Client 0 -> Train: Epoch = 2 | Loss = 1.281 | Accuracy = 56.672
+Client 1 -> Train: Epoch = 1 | Loss = 1.566 | Accuracy = 40.123
+Client 1 -> Train: Epoch = 2 | Loss = 1.197 | Accuracy = 55.883
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.303 | Accuracy = 11.122
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.670 | Accuracy = 43.570
+Client 0 -> Train: Epoch = 2 | Loss = 1.299 | Accuracy = 56.000
+Client samples sizes: [28979 21021], total: 50000
+Client samples sizes: [20680 29320], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.616 | Accuracy = 41.112
+Client 0 -> Train: Epoch = 2 | Loss = 1.205 | Accuracy = 58.603
+Client 1 -> Train: Epoch = 1 | Loss = 1.566 | Accuracy = 41.439
+Client 1 -> Train: Epoch = 2 | Loss = 1.176 | Accuracy = 58.042
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.304 | Accuracy = 10.024
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.619 | Accuracy = 40.542
+Client 0 -> Train: Epoch = 2 | Loss = 1.227 | Accuracy = 56.973
+Client 1 -> Train: Epoch = 1 | Loss = 1.565 | Accuracy = 41.436
+Client 1 -> Train: Epoch = 2 | Loss = 1.181 | Accuracy = 57.879
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.304 | Accuracy = 10.024
+ROUND 3
+Client 0 -> Train: Epoch = 1 | Loss = 1.612 | Accuracy = 41.460
+Client 0 -> Train: Epoch = 2 | Loss = 1.208 | Accuracy = 58.124
+Client 1 -> Train: Epoch = 1 | Loss = 1.567 | Accuracy = 41.716
+Client 1 -> Train: Epoch = 2 | Loss = 1.191 | Accuracy = 57.104
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.304 | Accuracy = 10.024
+ROUND 4
+Client 0 -> Train: Epoch = 1 | Loss = 1.627 | Accuracy = 39.705
+Client 0 -> Train: Epoch = 2 | Loss = 1.227 | Accuracy = 57.147
+Client 1 -> Train: Epoch = 1 | Loss = 1.572 | Accuracy = 41.057
+Client 1 -> Train: Epoch = 2 | Loss = 1.178 | Accuracy = 57.923
+[BEFORE AVG]
+Client samples sizes: [25491 24509], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.780 | Accuracy = 35.354
+Client 0 -> Train: Epoch = 2 | Loss = 1.402 | Accuracy = 49.590
+Client 1 -> Train: Epoch = 1 | Loss = 1.764 | Accuracy = 31.217
+Client 1 -> Train: Epoch = 2 | Loss = 1.403 | Accuracy = 47.893
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.306 | Accuracy = 9.962
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.797 | Accuracy = 34.502
+Client 0 -> Train: Epoch = 2 | Loss = 1.411 | Accuracy = 49.594
+Client 1 -> Train: Epoch = 1 | Loss = 1.768 | Accuracy = 31.184
+Client 1 -> Train: Epoch = 2 | Loss = 1.417 | Accuracy = 47.126
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.306 | Accuracy = 9.962
+ROUND 3
+Client 0 -> Train: Epoch = 1 | Loss = 1.774 | Accuracy = 35.640
+Client 0 -> Train: Epoch = 2 | Loss = 1.393 | Accuracy = 50.014
+Client 1 -> Train: Epoch = 1 | Loss = 1.766 | Accuracy = 31.136
+Client samples sizes: [22954 27046], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.844 | Accuracy = 34.935
+Client 0 -> Train: Epoch = 2 | Loss = 1.467 | Accuracy = 48.567
+Client 1 -> Train: Epoch = 1 | Loss = 1.739 | Accuracy = 34.763
+Client 1 -> Train: Epoch = 2 | Loss = 1.383 | Accuracy = 49.830
+[BEFORE AVG]
+Client samples sizes: [24377 25623], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.745 | Accuracy = 36.748
+Client 0 -> Train: Epoch = 2 | Loss = 1.398 | Accuracy = 48.734
+Client 1 -> Train: Epoch = 1 | Loss = 1.481 | Accuracy = 41.389
+Client 1 -> Train: Epoch = 2 | Loss = 1.124 | Accuracy = 57.113
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.307 | Accuracy = 10.014
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.726 | Accuracy = 37.363
+Client 0 -> Train: Epoch = 2 | Loss = 1.397 | Accuracy = 49.219
+Client 1 -> Train: Epoch = 1 | Loss = 1.494 | Accuracy = 40.284
+Client 1 -> Train: Epoch = 2 | Loss = 1.129 | Accuracy = 57.089
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.307 | Accuracy = 10.014
+ROUND 3
+Client 0 -> Train: Epoch = 1 | Loss = 1.747 | Accuracy = 36.260
+Client samples sizes: [17982 32018], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.769 | Accuracy = 39.823
+Client 0 -> Train: Epoch = 2 | Loss = 1.416 | Accuracy = 51.451
+Client 1 -> Train: Epoch = 1 | Loss = 1.636 | Accuracy = 37.735
+Client 1 -> Train: Epoch = 2 | Loss = 1.219 | Accuracy = 55.241
+[BEFORE AVG]
+Client samples sizes: [22559 27441], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.865 | Accuracy = 30.897
+Client 0 -> Train: Epoch = 2 | Loss = 1.481 | Accuracy = 46.731
+Client 1 -> Train: Epoch = 1 | Loss = 1.770 | Accuracy = 31.646
+Client 1 -> Train: Epoch = 2 | Loss = 1.383 | Accuracy = 47.793
+[BEFORE AVG]
+Client samples sizes: [27425 22575], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.834 | Accuracy = 34.990
+Client 0 -> Train: Epoch = 2 | Loss = 1.430 | Accuracy = 49.922
+Client 1 -> Train: Epoch = 1 | Loss = 1.680 | Accuracy = 33.714
+Client 1 -> Train: Epoch = 2 | Loss = 1.249 | Accuracy = 51.508
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.306 | Accuracy = 10.006
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.828 | Accuracy = 35.471
+Client 0 -> Train: Epoch = 2 | Loss = 1.437 | Accuracy = 49.510
+Client 1 -> Train: Epoch = 1 | Loss = 1.680 | Accuracy = 33.187
+Client 1 -> Train: Epoch = 2 | Loss = 1.236 | Accuracy = 52.430
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.306 | Accuracy = 10.006
+ROUND 3
+Client 0 -> Train: Epoch = 1 | Loss = 1.836 | Accuracy = 35.431
+Client 0 -> Train: Epoch = 2 | Loss = 1.430 | Accuracy = 50.264
+Client 1 -> Train: Epoch = 1 | Loss = 1.679 | Accuracy = 33.364
+Client 1 -> Train: Epoch = 2 | Loss = 1.249 | Accuracy = 51.539
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.306 | Accuracy = 10.006
+ROUND 4
+Client 0 -> Train: Epoch = 1 | Loss = 1.831 | Accuracy = 35.158
+Client 0 -> Train: Epoch = 2 | Loss = 1.433 | Accuracy = 49.597
+Client 1 -> Train: Epoch = 1 | Loss = 1.676 | Accuracy = 33.347
+Client 1 -> Train: Epoch = 2 | Loss = 1.226 | Accuracy = 52.456
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.306 | Accuracy = 10.006
+Server -> Test: Loss 2.306 | Accuracy = 10.020
+Client samples sizes: [22445 27555], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.783 | Accuracy = 36.837
+Client 0 -> Train: Epoch = 2 | Loss = 1.433 | Accuracy = 48.421
+Client 1 -> Train: Epoch = 1 | Loss = 1.738 | Accuracy = 33.870
+Client 1 -> Train: Epoch = 2 | Loss = 1.330 | Accuracy = 50.749
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.302 | Accuracy = 9.934
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.788 | Accuracy = 35.972
+Client 0 -> Train: Epoch = 2 | Loss = 1.428 | Accuracy = 48.719
+Client 1 -> Train: Epoch = 1 | Loss = 1.746 | Accuracy = 33.166
+Client 1 -> Train: Epoch = 2 | Loss = 1.344 | Accuracy = 50.136
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.302 | Accuracy = 9.934
+ROUND 3
+Client samples sizes: [26553 23447], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.818 | Accuracy = 35.198
+Client 0 -> Train: Epoch = 2 | Loss = 1.386 | Accuracy = 50.687
+Client 1 -> Train: Epoch = 1 | Loss = 1.825 | Accuracy = 30.017
+Client 1 -> Train: Epoch = 2 | Loss = 1.459 | Accuracy = 46.223
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.307 | Accuracy = 10.570
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.822 | Accuracy = 34.324
+Client 0 -> Train: Epoch = 2 | Loss = 1.404 | Accuracy = 50.217
+Client 1 -> Train: Epoch = 1 | Loss = 1.818 | Accuracy = 30.354
+Client samples sizes: [27060 22940], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.810 | Accuracy = 35.761
+Client 0 -> Train: Epoch = 2 | Loss = 1.404 | Accuracy = 50.769
+Client 1 -> Train: Epoch = 1 | Loss = 1.649 | Accuracy = 36.517
+Client 1 -> Train: Epoch = 2 | Loss = 1.239 | Accuracy = 54.368
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 2.307 | Accuracy = 11.110
+ROUND 2
+Client samples sizes: [34133 15867], total: 50000
+ROUND 1
+Client samples sizes: [20986 29014], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.884 | Accuracy = 34.966
+Client 0 -> Train: Epoch = 2 | Loss = 1.524 | Accuracy = 45.149
+Client 1 -> Train: Epoch = 1 | Loss = 1.660 | Accuracy = 35.910
+Client 1 -> Train: Epoch = 2 | Loss = 1.243 | Accuracy = 52.833
+[BEFORE AVG]
+Client samples sizes: [21049 28951], total: 50000
+ROUND 1
+Client 0 -> Train: Epoch = 1 | Loss = 1.879 | Accuracy = 33.313
+Client 0 -> Train: Epoch = 2 | Loss = 1.505 | Accuracy = 46.549
+Client 1 -> Train: Epoch = 1 | Loss = 1.786 | Accuracy = 35.118
+Client 1 -> Train: Epoch = 2 | Loss = 1.376 | Accuracy = 50.689
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 1.778 | Accuracy = 40.502
+ROUND 2
+Client 0 -> Train: Epoch = 1 | Loss = 1.411 | Accuracy = 50.164
+Client 0 -> Train: Epoch = 2 | Loss = 1.255 | Accuracy = 56.145
+Client 1 -> Train: Epoch = 1 | Loss = 1.303 | Accuracy = 53.863
+Client 1 -> Train: Epoch = 2 | Loss = 1.168 | Accuracy = 58.689
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 1.445 | Accuracy = 52.658
+ROUND 3
+Client 0 -> Train: Epoch = 1 | Loss = 1.196 | Accuracy = 58.079
+Client 0 -> Train: Epoch = 2 | Loss = 1.081 | Accuracy = 62.426
+Client 1 -> Train: Epoch = 1 | Loss = 1.108 | Accuracy = 61.003
+Client 1 -> Train: Epoch = 2 | Loss = 1.031 | Accuracy = 63.901
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 1.275 | Accuracy = 58.706
+ROUND 4
+Client 0 -> Train: Epoch = 1 | Loss = 1.077 | Accuracy = 62.573
+Client 0 -> Train: Epoch = 2 | Loss = 0.968 | Accuracy = 66.108
+Client 1 -> Train: Epoch = 1 | Loss = 0.988 | Accuracy = 65.683
+Client 1 -> Train: Epoch = 2 | Loss = 0.924 | Accuracy = 67.576
+[BEFORE AVG]
+[AFTER AVG]
+Server -> Train: Loss 1.164 | Accuracy = 61.328
+Server -> Test: Loss 1.304 | Accuracy = 57.200

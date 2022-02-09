@@ -36,15 +36,6 @@ class Server:
         self.optim_config = optim_config
         self.global_net = eval(model_config["net"])(self.num_classes)
 
-        self.delta_t = deepcopy(self.global_net.state_dict())
-        self.delta_init = True
-        self.vt = deepcopy(self.delta_t)
-        for key in self.vt.keys():
-            self.vt[key] = 1
-        self.tau = 1e-3
-        self.beta1 = 0.9
-        self.n = 0.1
-
         # FEDERATED CONFIGURATION
         self.num_clients = fed_config["num_clients"]
         self.avg_clients_rounds = fed_config["avg_clients_rounds"]
@@ -88,7 +79,9 @@ class Server:
         self.global_net.train()     # when gloabal net does it train?
         state_t = deepcopy(self.global_net.state_dict())
         trainable_params = [p for p in self.global_net.parameters() if p.requires_grad]
-        optimizer = torch.optim.Adagrad(trainable_params)
+        optimizer = eval(self.model_config["optimizer"])(trainable_params, lr=1,
+                                                         momentum=0,#self.optim_config["momentum"],
+                                                         weight_decay=0)
 
         for _ in range(self.num_rounds):
             round_num += 1
@@ -126,11 +119,10 @@ class Server:
 
             # AVERAGING
             # reset to 0 all global_net parameters
+            '''
             for layer in self.global_net.parameters():
                 nn.init.zeros_(layer)
-
-            # INIT THE DIFFERENCES
-            delta_i = []
+            '''
 
             # do the average
             for client in selected_clients:
@@ -141,11 +133,11 @@ class Server:
                     weight = client.trainset_size / num_samples
 
                 for p in range(len(trainable_params)):
-                    tensor = weight * client.net_updates[key]
-                    delta_i[p] += tensor
-
-            for p in range(len(trainable_params)):
-                trainable_params[p].grad = delta_i[key]
+                    tensor = weight * client.net_updates[p]
+                    if trainable_params[p].grad is None:
+                        trainable_params[p].grad = tensor
+                    else:
+                        trainable_params[p].grad += tensor
 
             optimizer.step()
 
@@ -161,8 +153,8 @@ class Server:
             self.delta_init = False
             '''
             # Calculate weighted accuracy of all clients (after clients updating, AFTER averaging)
+            state_t = deepcopy(self.global_net.state_dict())
             if print_acc:
-                self.global_net.load_state_dict(state_t)
                 self.logger.log("[AFTER AVG]")
                 self.run_testing(train=True)
 
