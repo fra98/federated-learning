@@ -1,7 +1,7 @@
 data_config:
   dataset_name: "CIFAR10"
   IID: False
-  alpha: 5
+  alpha: 10
   global_batch_size: 64
   std_client_samples: 0
 ---
@@ -16,12 +16,11 @@ optim_config:
   weight_decay: 0.0004
 ---
 fed_config:
-  num_clients: 3
-  avg_clients_rounds: 1 
+  num_clients: 4
+  avg_clients_rounds: 0.75
   std_clients_rounds: 0
   num_rounds: 2
   client_batch_size: 64 
   local_epochs: 2
-
-  fed_IR: True
+  fed_IR: False
   fed_VC: False
