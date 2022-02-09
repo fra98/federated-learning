@@ -46,6 +46,10 @@ class Server:
         self.local_epochs = fed_config["local_epochs"]
         self.fed_IR = fed_config["fed_IR"]
         self.fed_VC = fed_config["fed_VC"]
+        self.server_optimizer = fed_config["server_optimizer"]
+        self.server_lr = fed_config["server_lr"]
+        self.server_momentum = fed_config["server_momentum"]
+
         if self.fed_VC:
             self.virtual_client_size = self.trainset_size // self.num_clients
         else:
@@ -80,8 +84,9 @@ class Server:
         self.global_net.train()     # when gloabal net does it train?
         state_t = deepcopy(self.global_net.state_dict())
         trainable_params = [p for p in self.global_net.parameters() if p.requires_grad]
-        optimizer = eval(self.model_config["optimizer"])(trainable_params, lr=1,
-                                                         momentum=0,#self.optim_config["momentum"],
+        optimizer = eval(self.server_optimizer)(trainable_params,
+                                                         lr=self.server_lr,
+                                                         momentum=self.server_momentum,
                                                          weight_decay=0)
 
         for _ in range(self.num_rounds):

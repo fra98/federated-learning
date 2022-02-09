@@ -24,12 +24,9 @@ fed_config:
   local_epochs: 10
   fed_IR: false
   fed_VC: false
----
-fed_opt_config:
-  fed_OPT: true
-  optimizer: "torch.optim.SGD"
-  lr: 0.1
-  momentum: 0.5
-  
+  server_optimizer: "torch.optim.SGD"
+  server_lr: 0.1
+  server_momentum: 0.5
+
 
 
