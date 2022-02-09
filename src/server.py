@@ -116,8 +116,10 @@ class Server:
 
             # AVERAGING
             # reset to 0 all global_net parameters
-            for layer in self.global_net.parameters():
-                nn.init.zeros_(layer)
+            for key, value in self.global_net.state_dict().items():
+                if 'tracked' in key:
+                    continue
+                nn.init.zeros_(value)
 
             # do the average
             for client in selected_clients:
