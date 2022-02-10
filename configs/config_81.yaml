@@ -25,7 +25,7 @@ fed_config:
   fed_IR: false
   fed_VC: false
   server_optimizer: "torch.optim.Adam"
-  server_lr: 0.9
+  server_lr: 0.01
   server_lr_decay: 0.1
   server_momentum: 0.5
 
