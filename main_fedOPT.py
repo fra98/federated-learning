@@ -1,6 +1,6 @@
 import torch
 
-from src.server import Server
+from src.fedOPT.server import Server
 from src.logger_manager import LoggerHandler
 
 # PARAMETERS 

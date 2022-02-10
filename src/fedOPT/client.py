@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
+from copy import deepcopy
 
 from ..models import *
 from ..utils import run_accuracy, get_class_priors
@@ -32,6 +33,7 @@ class Client:
         self.model_config = model_config
         self.optim_config = optim_config
         self.net = eval(self.model_config["net"])(self.num_classes)
+        self.starting_net = eval(self.model_config["net"])(self.num_classes)
 
     def client_update(self, state_dict, drop_last=False, fed_IR=False, print_acc=True, fed_VC=False):
 
@@ -53,6 +55,8 @@ class Client:
         else:
             criterion = eval(self.model_config["criterion"])()
         trainable_params = [p for p in self.net.parameters() if p.requires_grad]
+        old_trainable_params = deepcopy(trainable_params)
+        self.net_updates = deepcopy(trainable_params)
         optimizer = eval(self.model_config["optimizer"])(trainable_params, lr=self.optim_config["lr"],
                                                          momentum=self.optim_config["momentum"],
                                                          weight_decay=self.optim_config["weight_decay"])
@@ -95,6 +99,9 @@ class Client:
                 avg_loss = epoch_loss / iter_per_epoch
                 train_accuracy = (num_corr_train / train_samples) * 100
                 self.logger.log(f'Client {self.id} -> Train: Epoch = {epoch + 1} | Loss = {avg_loss:.3f} | Accuracy = {train_accuracy:.3f}')
+
+        for i in range(len(trainable_params)):
+            self.net_updates[i] = old_trainable_params[i] - trainable_params[i]
 
     def train_accuracy(self, state_dict):
         self.net.to(self.device)

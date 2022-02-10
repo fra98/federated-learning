@@ -12,6 +12,10 @@ from ..models import *
 from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
 from ..splits import indexes_split_IID, indexes_split_NON_IID
 
+STEP_DOWN = True
+STEP_SIZE = [12, 24, 50, 75, 100]   # How many epochs before decreasing learning rate (if using a step-down policy)
+GAMMA = 0.3
+
 class Server:
     def __init__(self, device, data_config, model_config, optim_config, fed_config, logger=None):
         self.device = device
@@ -45,6 +49,11 @@ class Server:
         self.local_epochs = fed_config["local_epochs"]
         self.fed_IR = fed_config["fed_IR"]
         self.fed_VC = fed_config["fed_VC"]
+        self.server_optimizer = fed_config["server_optimizer"]
+        self.server_lr_decay = fed_config["server_lr_decay"]
+        self.server_lr = fed_config["server_lr"]
+        self.server_momentum = fed_config["server_momentum"]
+
         if self.fed_VC:
             self.virtual_client_size = self.trainset_size // self.num_clients
         else:
@@ -77,15 +86,23 @@ class Server:
         if state_dict is not None:
             self.global_net.load_state_dict(state_dict)
         self.global_net.train()     # when gloabal net does it train?
+        state_t = deepcopy(self.global_net.state_dict())
+        trainable_params = [p for p in self.global_net.parameters() if p.requires_grad]
+        optimizer = eval(self.server_optimizer)(trainable_params,
+                                                         lr=self.server_lr,
+                                                         momentum=self.server_momentum,
+                                                         weight_decay=0)
+        schedule = None
+
+        if STEP_DOWN:
+            scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=STEP_SIZE, gamma=GAMMA)
 
         for _ in range(self.num_rounds):
             round_num += 1
             self.logger.log(f"ROUND {round_num}")
+            optimizer.zero_grad()
 
-            # Save state at current round
-            state_t = deepcopy(self.global_net.state_dict())
-
-            # Calculate clients weights based on how many samples they have                                                            
+            # Calculate clients weights based on how many samples they have
             if self.fed_VC:
                 clients_weight = numpy.zeros((len(self.clients)))
                 for i in range(len(self.clients)):
@@ -112,10 +129,16 @@ class Server:
             # Calculate weighted accuracy of all clients (after clients updating, BEFORE averaging)
             if print_acc:
                 self.logger.log("[BEFORE AVG]")
-                self.run_weighted_clients_accuracy()
+                #self.run_weighted_clients_accuracy()
 
             # AVERAGING
-            old_state = deepcopy(self.global_net.state_dict())
+            # reset to 0 all global_net parameters
+            '''
+            for layer in self.global_net.parameters():
+                nn.init.zeros_(layer)
+            '''
+
+            # do the average
             for client in selected_clients:
                 if self.fed_VC:
                     # for Fed_VC we use every time the same total amount of sample per client
@@ -123,13 +146,29 @@ class Server:
                 else:
                     weight = client.trainset_size / num_samples
 
-                for key in self.global_net.state_dict().keys():
-                    old_tensor = old_state[key]
-                    new_tensor = client.net.state_dict()[key]
-                    delta = new_tensor - old_tensor
-                    self.global_net.state_dict()[key] += (weight * delta).type(old_tensor.type())
+                for p in range(len(trainable_params)):
+                    tensor = weight * client.net_updates[p]
+                    if trainable_params[p].grad is None:
+                        trainable_params[p].grad = tensor
+                    else:
+                        trainable_params[p].grad += tensor
 
+            optimizer.step()
+            scheduler.step()
+
+            '''
+            for key in self.global_net.state_dict().keys():
+                # now we have a full update delta_i
+                if self.delta_init:
+                    self.delta_t[key] = (1 - self.beta1) * (delta_i[key])
+                else:
+                    self.delta_t[key] = (self.beta1 * self.delta_t[key]) + (1 - self.beta1) * (delta_i[key])
+                self.vt[key] = self.vt[key] + (self.delta_t[key] ** 2)
+                state_t[key] = (state_t[key] - (self.n * self.delta_t[key] / (torch.sqrt(self.vt[key]) + self.tau))).type(tensor.type())
+            self.delta_init = False
+            '''
             # Calculate weighted accuracy of all clients (after clients updating, AFTER averaging)
+            state_t = deepcopy(self.global_net.state_dict())
             if print_acc:
                 self.logger.log("[AFTER AVG]")
                 self.run_testing(train=True)
