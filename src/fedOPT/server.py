@@ -46,6 +46,7 @@ class Server:
         self.fed_IR = fed_config["fed_IR"]
         self.fed_VC = fed_config["fed_VC"]
         self.server_optimizer = fed_config["server_optimizer"]
+        self.server_lr_decay = fed_config["server_lr_decay"]
         self.server_lr = fed_config["server_lr"]
         self.server_momentum = fed_config["server_momentum"]
 
