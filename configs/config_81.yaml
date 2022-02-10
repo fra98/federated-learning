@@ -17,11 +17,11 @@ optim_config:
 ---
 fed_config:
   num_clients: 50
-  avg_clients_rounds: 0.1
+  avg_clients_rounds: 0.2
   std_clients_rounds: 0
   num_rounds: 5
   client_batch_size: 64 
-  local_epochs: 10
+  local_epochs: 5
   fed_IR: false
   fed_VC: false
   server_optimizer: "torch.optim.Adam"
