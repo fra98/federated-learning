@@ -27,7 +27,7 @@ fed_config:
   server_optimizer: "torch.optim.SGD"
   server_lr: 0.1
   server_lr_decay: 0.1
-  server_momentum: 0
+  server_momentum: 0.1
 
 
 
