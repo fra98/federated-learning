@@ -24,10 +24,10 @@ fed_config:
   local_epochs: 5
   fed_IR: false
   fed_VC: false
-  server_optimizer: "torch.optim.Adagrad"
-  server_lr: 1e-3
+  server_optimizer: "torch.optim.SGD"
+  server_lr: 0.001
   server_lr_decay: 0.1
-  server_momentum: 0.5
+  server_momentum: 0
 
 
 
