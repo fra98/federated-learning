@@ -19,7 +19,7 @@ fed_config:
   num_clients: 50
   avg_clients_rounds: 0.75
   std_clients_rounds: 0
-  num_rounds: 5
+  num_rounds: 2
   client_batch_size: 64 
   local_epochs: 5
   fed_IR: false

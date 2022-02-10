@@ -25,7 +25,7 @@ fed_config:
   fed_IR: false
   fed_VC: false
   server_optimizer: "torch.optim.Adagrad"
-  server_lr: 0.9
+  server_lr: 1e-3
   server_lr_decay: 0.1
   server_momentum: 0.5
 
