@@ -83,3 +83,21 @@ def get_class_priors(num_classes, labels, device='cpu'):
         priors[i] = torch.sum(i == labels).data.item()
 
     return priors / torch.sum(priors)
+
+def get_optimizer(conf_optimizer, train_params):
+    optimizer = None
+    if conf_optimizer["name"] == "Adam":
+        optimizer = torch.optim.Adam(train_params,
+            lr=conf_optimizer["lr"],
+            weight_decay=conf_optimizer["weight_decay"],
+            betas=[conf_optimizer["beta1"], conf_optimizer["beta2"]])
+    elif conf_optimizer["name"] == "Adagrad":
+        optimizer = torch.optim.Adagrad(train_params,
+            lr=conf_optimizer["lr"],
+            weight_decay=conf_optimizer["weight_decay"])
+    elif conf_optimizer["name"] == "SGD":
+        optimizer = torch.optim.SGD(train_params,
+            lr=conf_optimizer["lr"],
+            momentum=conf_optimizer["momentum"],
+            weight_decay=conf_optimizer["weight_decay"])
+    return optimizer

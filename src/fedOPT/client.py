@@ -5,7 +5,7 @@ import numpy as np
 from copy import deepcopy
 
 from ..models import *
-from ..utils import run_accuracy, get_class_priors
+from ..utils import run_accuracy, get_class_priors, get_optimizer
 
 
 class Client:
@@ -57,9 +57,7 @@ class Client:
         trainable_params = [p for p in self.net.parameters() if p.requires_grad]
         old_trainable_params = deepcopy(trainable_params)
         self.net_updates = deepcopy(trainable_params)
-        optimizer = eval(self.model_config["optimizer"])(trainable_params, lr=self.optim_config["lr"],
-                                                         momentum=self.optim_config["momentum"],
-                                                         weight_decay=self.optim_config["weight_decay"])
+        optimizer = get_optimizer(self.optim_config, trainable_params)
 
         # Trainloader
         trainloader = torch.utils.data.DataLoader(trainset, batch_size=self.batch_size, shuffle=True,
