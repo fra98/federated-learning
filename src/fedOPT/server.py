@@ -12,6 +12,10 @@ from ..models import *
 from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
 from ..splits import indexes_split_IID, indexes_split_NON_IID
 
+STEP_DOWN = False
+STEP_SIZE = [15, 45, 100, 200]   # How many epochs before decreasing learning rate (if using a step-down policy)
+GAMMA = 0.3
+
 class Server:
     def __init__(self, device, data_config, model_config, optim_config, fed_config, logger=None):
         self.device = device
@@ -88,6 +92,10 @@ class Server:
                                                          lr=self.server_lr,
                                                          momentum=self.server_momentum,
                                                          weight_decay=0)
+        schedule = None
+
+        if STEP_DOWN:
+            scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=STEP_SIZE, gamma=GAMMA)
 
         for _ in range(self.num_rounds):
             round_num += 1
@@ -146,6 +154,7 @@ class Server:
                         trainable_params[p].grad += tensor
 
             optimizer.step()
+            scheduler.step()
 
             '''
             for key in self.global_net.state_dict().keys():
