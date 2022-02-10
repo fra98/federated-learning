@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 BASE_PATH = "logs/"
 
 LOGS = [     
-            1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+             1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
             21, 22, 23, 24,
             30, 31, 32, 34,
             40, 41, 42,
+            60, 61, 62, 64,
+            70, 71, 72, 74,
             82
         ]
 
@@ -77,7 +79,7 @@ if __name__ == '__main__':
     plt.xlabel("Rounds")
     plt.ylabel("Accuracy")
     
-    SHOW = [20, 82]
+    SHOW = [31, 61, 71]
 
     for i in SHOW:
         plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
