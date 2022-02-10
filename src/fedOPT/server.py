@@ -12,7 +12,7 @@ from ..models import *
 from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
 from ..splits import indexes_split_IID, indexes_split_NON_IID
 
-STEP_DOWN = False
+STEP_DOWN = True
 STEP_SIZE = [15, 45, 100, 200]   # How many epochs before decreasing learning rate (if using a step-down policy)
 GAMMA = 0.3
 
