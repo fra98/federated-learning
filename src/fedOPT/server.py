@@ -86,7 +86,7 @@ class Server:
         trainable_params = [p for p in self.global_net.parameters() if p.requires_grad]
         optimizer = eval(self.server_optimizer)(trainable_params,
                                                          lr=self.server_lr,
-                                                         lr_decay=self.server_lr_decay,
+                                                         #lr_decay=self.server_lr_decay,
                                                          #momentum=self.server_momentum,
                                                          weight_decay=0)
 
