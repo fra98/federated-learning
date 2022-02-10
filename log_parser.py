@@ -4,11 +4,12 @@ import matplotlib.pyplot as plt
 BASE_PATH = "logs/"
 
 LOGS = [     
-             1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 
+            1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
             21, 22, 23, 24,
             30, 31, 32, 34,
-            40, 41, 42
+            40, 41, 42,
+            82
         ]
 
 vect_train_rounds = []
@@ -44,7 +45,7 @@ def get_results(path):
 
 
 if __name__ == '__main__':
-    for config in range(70):
+    for config in range(90):
         if config in LOGS:
             round, train_acc, train_loss = get_results(BASE_PATH + f"train_acc_{config:02}.txt")
             vect_train_rounds.append(round)
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     plt.xlabel("Rounds")
     plt.ylabel("Accuracy")
     
-    SHOW = [41, 19]
+    SHOW = [20, 82]
 
     for i in SHOW:
         plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
