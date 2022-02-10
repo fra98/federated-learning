@@ -13,7 +13,7 @@ from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients
 from ..splits import indexes_split_IID, indexes_split_NON_IID
 
 STEP_DOWN = True
-STEP_SIZE = [15, 45, 100, 200]   # How many epochs before decreasing learning rate (if using a step-down policy)
+STEP_SIZE = [12, 24, 50, 75, 100]   # How many epochs before decreasing learning rate (if using a step-down policy)
 GAMMA = 0.3
 
 class Server:
