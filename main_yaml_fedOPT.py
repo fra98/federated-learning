@@ -14,19 +14,23 @@ LOG_NAME = f"{CONFIG}.log"
 if __name__ == "__main__":    
     print(DEVICE)
 
-    with open(f'./configs/{CONFIG}.yaml') as f:
+    loggerManager = LoggerHandler(LOG_PATH)
+    loggerManager.create_logger(LOG_NAME, LOG_NAME)
+    loggerManager.set_default_logger(LOG_NAME)
+
+    with open(f'./configs/fedOPT/{CONFIG}.yaml') as f:
         configs = list(yaml.load_all(f, Loader=yaml.FullLoader))
-        loggerManager = LoggerHandler(LOG_PATH)
-        loggerManager.create_logger(LOG_NAME, LOG_NAME)
-        loggerManager.set_default_logger(LOG_NAME)
 
     data_config = configs[0]["data_config"]
     model_config = configs[1]["model_config"]
-    optim_config = configs[2]["optim_config"]
-    fed_config = configs[3]["fed_config"]
+    client_optimizer = configs[2]["client_optimizer"]
+    server_optimizer = configs[3]["server_optimizer"]
+    fed_config = configs[4]["fed_config"]
 
-    server = Server(DEVICE, data_config=data_config, model_config=model_config, optim_config=optim_config,
+    server = Server(DEVICE, data_config=data_config, model_config=model_config, 
+                    client_optimizer=client_optimizer, server_optimizer=server_optimizer,
                     fed_config=fed_config, logger=loggerManager)
+
     server.init_clients()
 
     # TRAINING
