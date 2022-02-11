@@ -47,7 +47,7 @@ def get_results(path):
 
 
 if __name__ == '__main__':
-    for config in range(90):
+    for config in range(100):
         if config in LOGS:
             round, train_acc, train_loss = get_results(BASE_PATH + f"train_acc_{config:02}.txt")
             vect_train_rounds.append(round)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
             vect_test_loss.append([])
 
 
-    for i in range(70):
+    for i in range(100):
         assert len(vect_train_rounds[i]) == len(vect_train_acc[i])
         assert len(vect_test_rounds[i]) == len(vect_test_acc[i])
         assert len(vect_test_acc[i]) == len(vect_train_acc[i])
@@ -79,10 +79,12 @@ if __name__ == '__main__':
     plt.xlabel("Rounds")
     plt.ylabel("Accuracy")
     
-    SHOW = [31, 61, 71]
+    # SHOW = [24, 34, 74]
+    # SHOW = [19, 31, 71]
+    SHOW = [31, 41, 71]
 
     for i in SHOW:
-        plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
+        # plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
         plt.plot(vect_test_rounds[i], vect_test_acc[i], label=f'test {i}')
     
     plt.legend(loc='lower right')
