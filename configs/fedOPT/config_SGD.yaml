@@ -3,7 +3,7 @@ data_config:
   IID: false
   alpha: 1
   global_batch_size: 64
-  std_client_samples: 0.5
+  std_client_samples: 0
 ---
 model_config:
   net: "LeNet5_MOD"
@@ -16,10 +16,10 @@ client_optimizer:
   momentum: 0.9
 ---
 server_optimizer: 
-  name: "Adagrad"
-  lr: 0.01
-  weight_decay: 0.0004
-  momentum: None
+  name: "Adagrad" # "SDG"
+  lr: 0.001
+  weight_decay: 0.00004
+  momentum: 0.9
   beta1: None
   beta2: None
   tau: 0.001
