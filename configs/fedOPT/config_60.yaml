@@ -6,7 +6,7 @@ data_config:
   std_client_samples: 0.5
 ---
 model_config:
-  net: "LeNet5_MOD"
+  net: "LeNet5_MOD_BN"
   criterion: "torch.nn.CrossEntropyLoss"
 ---
 client_optimizer: 
