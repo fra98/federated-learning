@@ -49,13 +49,14 @@ if __name__ == "__main__":
         state_dict = torch.load(NET_PATH)
         with open(COUNTER_PATH, 'r') as f:
             round_num = int(f.readline())
-
+            
+    state_dict_opt = None
     if os.path.isfile(OPT_PATH):
-        state_dict_optimizer = torch.load(OPT_PATH)
+        state_dict_opt = torch.load(OPT_PATH)
 
 
     # TRAINING
-    server.run_training(print_acc=False, state_dict=state_dict, state_dict_optimizer=state_dict_optimizer, round_num=round_num)
+    server.run_training(print_acc=False, state_dict=state_dict, state_dict_opt=state_dict_opt, round_num=round_num)
 
     round_num += server.num_rounds
 
