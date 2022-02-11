@@ -15,7 +15,7 @@ GLOBAL_BATCH_SIZE = 64
 STD_CLIENT_SAMPLES = 0.2 # Std-dev of number of sample per client, relative to average number of sample
 
 # Model config
-NET = "LeNet5_MOD_LIGHT"
+NET = "LeNet5_MOD_LIGHT_BN"
 CRITERION = "torch.nn.CrossEntropyLoss"
 OPTIMIZER = "torch.optim.SGD"
 

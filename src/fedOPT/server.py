@@ -9,15 +9,15 @@ import torch.optim as optim
 
 from .client import Client
 from ..models import *
-from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
+from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes, get_optimizer
 from ..splits import indexes_split_IID, indexes_split_NON_IID
 
-STEP_DOWN = True
+STEP_DOWN = False
 STEP_SIZE = [12, 24, 50, 75, 100]   # How many epochs before decreasing learning rate (if using a step-down policy)
 GAMMA = 0.3
 
 class Server:
-    def __init__(self, device, data_config, model_config, optim_config, fed_config, logger=None):
+    def __init__(self, device, data_config, model_config, server_optimizer, client_optimizer, fed_config, logger=None):
         self.device = device
         self.clients = []
 
@@ -37,7 +37,6 @@ class Server:
 
         # MODEL CONFIGURATION
         self.model_config = model_config
-        self.optim_config = optim_config
         self.global_net = eval(model_config["net"])(self.num_classes)
 
         # FEDERATED CONFIGURATION
@@ -49,10 +48,8 @@ class Server:
         self.local_epochs = fed_config["local_epochs"]
         self.fed_IR = fed_config["fed_IR"]
         self.fed_VC = fed_config["fed_VC"]
-        self.server_optimizer = fed_config["server_optimizer"]
-        self.server_lr_decay = fed_config["server_lr_decay"]
-        self.server_lr = fed_config["server_lr"]
-        self.server_momentum = fed_config["server_momentum"]
+        self.server_optimizer = server_optimizer
+        self.client_optimizer = client_optimizer
 
         if self.fed_VC:
             self.virtual_client_size = self.trainset_size // self.num_clients
@@ -72,7 +69,7 @@ class Server:
         for i in range(self.num_clients):
             trainset_i = torch.utils.data.Subset(self.trainset, indexes[i])
             client = Client(i, self.device, self.local_epochs, self.client_batch_size, trainset_i,
-                            model_config=self.model_config, optim_config=self.optim_config,
+                            model_config=self.model_config, optim_config=self.client_optimizer,
                             server_class_priors=self.class_priors, virtual_client_size=self.virtual_client_size,
                             logger=self.logger)
             self.clients.append(client)
@@ -87,12 +84,9 @@ class Server:
             self.global_net.load_state_dict(state_dict)
         self.global_net.train()     # when gloabal net does it train?
         state_t = deepcopy(self.global_net.state_dict())
-        trainable_params = [p for p in self.global_net.parameters() if p.requires_grad]
-        optimizer = eval(self.server_optimizer)(trainable_params,
-                                                         lr=self.server_lr,
-                                                         momentum=self.server_momentum,
-                                                         weight_decay=0)
-        schedule = None
+        trainable_params = [p for p in self.global_net.parameters()] #if p.requires_grad]
+        optimizer = get_optimizer(self.server_optimizer,trainable_params)
+        scheduler = None
 
         if STEP_DOWN:
             scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=STEP_SIZE, gamma=GAMMA)
@@ -147,14 +141,15 @@ class Server:
                     weight = client.trainset_size / num_samples
 
                 for p in range(len(trainable_params)):
-                    tensor = weight * client.net_updates[p]
+                    tensor = (weight * client.net_updates[p]).type(client.net_updates[p].type())
                     if trainable_params[p].grad is None:
                         trainable_params[p].grad = tensor
                     else:
                         trainable_params[p].grad += tensor
 
             optimizer.step()
-            scheduler.step()
+            if scheduler is not None:
+                scheduler.step()
 
             '''
             for key in self.global_net.state_dict().keys():

@@ -26,7 +26,7 @@ if __name__ == "__main__":
     loggerManager.create_logger(TRAIN_ACC_LOG, TRAIN_ACC_LOG)
     loggerManager.create_logger(TEST_ACC_LOG, TEST_ACC_LOG)
 
-    with open(f'./configs/{CONFIG}.yaml') as f:
+    with open(f'./configs/fedAVG/{CONFIG}.yaml') as f:
         configs = list(yaml.load_all(f, Loader=yaml.FullLoader))
 
     data_config = configs[0]["data_config"]
