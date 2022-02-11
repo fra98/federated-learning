@@ -86,7 +86,7 @@ class Server:
         state_t = deepcopy(self.global_net.state_dict())
         trainable_params = [p for p in self.global_net.parameters()] #if p.requires_grad]
         self.optimizer = get_optimizer(self.server_optimizer, trainable_params)
-        
+
         if state_dict_opt is not None:
             self.optimizer.load_state_dict(state_dict_opt)
         scheduler = None
@@ -97,7 +97,7 @@ class Server:
         for _ in range(self.num_rounds):
             round_num += 1
             self.logger.log(f"ROUND {round_num}")
-            optimizer.zero_grad()
+            self.optimizer.zero_grad()
 
             # Calculate clients weights based on how many samples they have
             if self.fed_VC:
