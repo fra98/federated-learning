@@ -19,7 +19,7 @@ server_optimizer:
   name: "Adagrad" # "SDG"
   lr: 0.001
   weight_decay: 0.00004
-  momentum: 0.5
+  momentum: None
   beta1: None
   beta2: None
   tau: 0.001
