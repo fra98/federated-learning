@@ -86,7 +86,9 @@ class Server:
         state_t = deepcopy(self.global_net.state_dict())
         trainable_params = [p for p in self.global_net.parameters()] #if p.requires_grad]
         self.optimizer = get_optimizer(self.server_optimizer, trainable_params)
-        self.optimizer.load_state_dict(state_dict_opt)
+        
+        if state_dict_opt is not None:
+            self.optimizer.load_state_dict(state_dict_opt)
         scheduler = None
 
         if STEP_DOWN:
