@@ -11,7 +11,7 @@ model_config:
 ---
 client_optimizer: 
   name: "SGD"
-  lr: 0.1
+  lr: 0.01
   weight_decay: 0.0004
   momentum: 0.9
 ---
@@ -19,9 +19,9 @@ server_optimizer:
   name: "SGD"
   lr: 1
   weight_decay: 0.00004
-  momentum: None
-  beta1: 0.9
-  beta2: 0.99
+  momentum: 0.9
+  beta1: None
+  beta2: None
   tau: 0.001
 ---
 fed_config:
