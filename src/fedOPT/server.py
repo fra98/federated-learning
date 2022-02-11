@@ -12,7 +12,7 @@ from ..models import *
 from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes, get_optimizer
 from ..splits import indexes_split_IID, indexes_split_NON_IID
 
-STEP_DOWN = True
+STEP_DOWN = False
 STEP_SIZE = [12, 24, 50, 75, 100]   # How many epochs before decreasing learning rate (if using a step-down policy)
 GAMMA = 0.3
 
@@ -86,7 +86,7 @@ class Server:
         state_t = deepcopy(self.global_net.state_dict())
         trainable_params = [p for p in self.global_net.parameters()] #if p.requires_grad]
         optimizer = get_optimizer(self.server_optimizer,trainable_params)
-        schedule = None
+        scheduler = None
 
         if STEP_DOWN:
             scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=STEP_SIZE, gamma=GAMMA)
@@ -148,7 +148,8 @@ class Server:
                         trainable_params[p].grad += tensor
 
             optimizer.step()
-            scheduler.step()
+            if scheduler is not None:
+                scheduler.step()
 
             '''
             for key in self.global_net.state_dict().keys():
