@@ -1,0 +1,38 @@
+data_config:
+  dataset_name: "CIFAR10"
+  IID: false
+  alpha: 1
+  global_batch_size: 64
+  std_client_samples: 0.5
+---
+model_config:
+  net: "LeNet5_MOD"
+  criterion: "torch.nn.CrossEntropyLoss"
+---
+client_optimizer: 
+  name: "SGD"
+  lr: 0.01
+  weight_decay: 0.0004
+  momentum: 0.9
+---
+server_optimizer: 
+  name: "Adagrad"
+  lr: 0.01
+  weight_decay: 0.00004
+  momentum: None
+  beta1: None
+  beta2: None
+  tau: 0.001
+---
+fed_config:
+  num_clients: 50
+  avg_clients_rounds: 0.75
+  std_clients_rounds: 0
+  num_rounds: 5
+  client_batch_size: 64 
+  local_epochs: 2
+  fed_IR: false
+  fed_VC: false
+
+
+
