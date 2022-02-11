@@ -74,8 +74,8 @@ def generate_clients_sizes(dataset_size, num_clients, std_client_samples):
     clients_sizes = np.random.normal(avg_train_size, avg_train_size * std_client_samples, num_clients)
     delta = dataset_size - np.sum(clients_sizes) # distribute difference over all clients
     clients_sizes = np.around((clients_sizes + delta/len(clients_sizes))).astype(int)  
-    clients_sizes = max(clients_sizes, int(avg_train_size * 0.1))
-    clients_sizes = min(clients_sizes, int(avg_train_size * 1.9))
+    for i in len(clients_sizes):
+        clients_sizes[i] = min(max(clients_sizes[i], int(avg_train_size * 0.1)), int(avg_train_size * 1.9))
     return clients_sizes
 
 
