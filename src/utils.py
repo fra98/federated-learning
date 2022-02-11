@@ -91,10 +91,14 @@ def get_optimizer(conf_optimizer, train_params):
             lr=conf_optimizer["lr"],
             weight_decay=conf_optimizer["weight_decay"],
             betas=[conf_optimizer["beta1"], conf_optimizer["beta2"]])
+        if conf_optimizer["tau"] is not None:
+            optimizer.eps = conf_optimizer["tau"]
     elif conf_optimizer["name"] == "Adagrad":
         optimizer = torch.optim.Adagrad(train_params,
             lr=conf_optimizer["lr"],
             weight_decay=conf_optimizer["weight_decay"])
+        if conf_optimizer["tau"] is not None:
+            optimizer.eps = conf_optimizer["tau"]
     elif conf_optimizer["name"] == "SGD":
         optimizer = torch.optim.SGD(train_params,
             lr=conf_optimizer["lr"],
