@@ -103,6 +103,7 @@ def main_cifar_split_class_balanced():
 
     print_stats(map)
 
+    return map
 
 def main_cifar_split_class_unbalanced():
     map = np.zeros((NUM_CLIENTS, NUM_CLASSES), dtype=np.int32)
@@ -144,6 +145,26 @@ def main_cifar_split_class_unbalanced():
 
     print_stats(map)
 
+def print_all_heatmaps(maps, alpha):
+    fig, axs = plt.subplots(1, len(maps), figsize=(3, 5))
+
+    for i in range(len(maps)):
+        axs[i].imshow(maps[i])
+        axs[i].set_title("\u03B1: " + str(alpha[i]))
+        axs[i].axis('off')
+
+    fig.tight_layout()
+    plt.axis('off')
+    plt.show()
+
+
+def print_heatmap(arr):
+    fig, ax = plt.subplots()
+    im = ax.imshow(arr)
+
+    fig.tight_layout()
+    plt.axis('off')
+    plt.show()
 
 if __name__ == '__main__':
     if len(sys.argv) == 3:
@@ -154,5 +175,13 @@ if __name__ == '__main__':
         main_cifar_split_class_balanced()
     elif V == 2:
         main_cifar_split_class_unbalanced()
+    elif V == 3:
+        maps = []
+        alphas = [1, 10, 100]
+        for alpha in alphas:
+            ALPHA = alpha
+            map = main_cifar_split_class_balanced()
+            maps.append(map)
+        print_all_heatmaps(maps, alphas)
     else :
         main_cifar_split()
