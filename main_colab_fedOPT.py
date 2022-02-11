@@ -12,6 +12,7 @@ CONFIG = 'config_Adam'
 BASE_PATH = f'.log/run/{CONFIG}/'
 # BASE_PATH = f'/content/gdrive/MyDrive/run/{CONFIG}/'
 NET_PATH = BASE_PATH + 'server.pth'
+OPT_PATH = BASE_PATH + 'optimizer.pth'
 COUNTER_PATH = BASE_PATH + 'counter.txt'
 LOG_NAME = f'{CONFIG}.log'
 TRAIN_ACC_LOG = 'train_acc.txt'
@@ -49,8 +50,12 @@ if __name__ == "__main__":
         with open(COUNTER_PATH, 'r') as f:
             round_num = int(f.readline())
 
+    if os.path.isfile(OPT_PATH):
+        state_dict_optimizer = torch.load(OPT_PATH)
+
+
     # TRAINING
-    server.run_training(print_acc=False, state_dict=state_dict, round_num=round_num)
+    server.run_training(print_acc=False, state_dict=state_dict, state_dict_optimizer=state_dict_optimizer, round_num=round_num)
 
     round_num += server.num_rounds
 

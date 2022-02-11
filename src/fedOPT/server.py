@@ -75,7 +75,7 @@ class Server:
             self.clients.append(client)
 
 
-    def run_training(self, state_dict=None, round_num=0, print_acc=True):
+    def run_training(self, state_dict=None, state_dict_opt=None, round_num=0, print_acc=True):
         if len(self.clients) == 0:
             self.init_clients()
 
@@ -85,7 +85,8 @@ class Server:
         self.global_net.train()     # when gloabal net does it train?
         state_t = deepcopy(self.global_net.state_dict())
         trainable_params = [p for p in self.global_net.parameters()] #if p.requires_grad]
-        optimizer = get_optimizer(self.server_optimizer,trainable_params)
+        self.optimizer = get_optimizer(self.server_optimizer, trainable_params)
+        self.optimizer.load_state_dict(state_dict_opt)
         scheduler = None
 
         if STEP_DOWN:
@@ -147,7 +148,7 @@ class Server:
                     else:
                         trainable_params[p].grad += tensor
 
-            optimizer.step()
+            self.optimizer.step()
             if scheduler is not None:
                 scheduler.step()
 
