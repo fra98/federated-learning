@@ -16,9 +16,9 @@ client_optimizer:
   momentum: 0.9
 ---
 server_optimizer: 
-  name: "Adagrad" # "SDG"
+  name: "SGD"
   lr: 0.001
-  weight_decay: 0.00004
+  weight_decay: 0.0004
   momentum: 0.9
   beta1: None
   beta2: None

@@ -3,10 +3,10 @@ data_config:
   IID: false
   alpha: 1
   global_batch_size: 64
-  std_client_samples: 0
+  std_client_samples: 0.5
 ---
 model_config:
-  net: "LeNet5_MOD"
+  net: "LeNet5_MOD_BN"
   criterion: "torch.nn.CrossEntropyLoss"
 ---
 client_optimizer: 
@@ -17,7 +17,7 @@ client_optimizer:
 ---
 server_optimizer: 
   name: "Adagrad"
-  lr: 0.001
+  lr: 0.01
   weight_decay: 0.0004
   momentum: None
   beta1: None
