@@ -9,8 +9,9 @@ LOGS = [
             21, 22, 23, 24, 25,
             30, 31, 32, 34, 35,
             40, 41, 42,
-        #   50, 51, 52, 53, 54, 55,
-        #   60, 61, 62, 63, 64, 65
+            50, 51, #52, 53,
+            54, 55,
+            #60, 61, 62, 63, 64, 65
         ]
 
 vect_train_rounds = []
@@ -78,7 +79,7 @@ if __name__ == '__main__':
     plt.xlabel("Rounds")
     plt.ylabel("Accuracy")
     
-    SHOW = [25, 25]
+    SHOW = [25, 50]
 
     for i in SHOW:
         plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
