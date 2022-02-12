@@ -17,13 +17,13 @@ client_optimizer:
 ---
 server_optimizer: 
   name: "Adagrad"
-  lr: 0.05
+  lr: 0.01
   weight_decay: 0.0004
   momentum: None
   beta1: None
   beta2: None
   tau: 0.001
-  lr_decay: 0.02
+  lr_decay: 0.01
 ---
 fed_config:
   num_clients: 50
