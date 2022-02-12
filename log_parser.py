@@ -6,12 +6,11 @@ BASE_PATH = "logs/"
 LOGS = [     
              1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-            21, 22, 23, 24,
-            30, 31, 32, 34,
+            21, 22, 23, 24, 25,
+            30, 31, 32, 34, 35,
             40, 41, 42,
-            60, 61, 62, 64,
-            70, 71, 72, 74,
-            82
+        #   50, 51, 52, 53, 54, 55,
+        #   60, 61, 62, 63, 64, 65
         ]
 
 vect_train_rounds = []
@@ -79,12 +78,10 @@ if __name__ == '__main__':
     plt.xlabel("Rounds")
     plt.ylabel("Accuracy")
     
-    # SHOW = [24, 34, 74]
-    # SHOW = [19, 31, 71]
-    SHOW = [31, 41, 71]
+    SHOW = [25, 25]
 
     for i in SHOW:
-        # plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
+        plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
         plt.plot(vect_test_rounds[i], vect_test_acc[i], label=f'test {i}')
     
     plt.legend(loc='lower right')
