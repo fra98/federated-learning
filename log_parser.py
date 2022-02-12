@@ -10,7 +10,7 @@ LOGS = [
             30, 31, 32, 34, 35,
             40, 41, 42,
             50, 51, 52, 53, 54, 55,
-            64, 65 #60, 61, 62, 63, 64, 65
+                    62, 63, 64, 65
         ]
 
 vect_train_rounds = []
@@ -91,9 +91,9 @@ if __name__ == '__main__':
     plt.ylabel("Accuracy")
     
     # SHOW = [25, 35, 54, 55, 64, 65]
-    # SHOW = [25, 50, 51]
+    SHOW = [25, 51, 53, 55]
     # SHOW = [35, 64, 65]
-    SHOW = [101, 102, 103, 105]  # CENTRALIZED
+    # SHOW = [101, 103, 105]  # CENTRALIZED
 
     for i in SHOW:
         plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
