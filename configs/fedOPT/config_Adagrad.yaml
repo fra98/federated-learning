@@ -23,6 +23,7 @@ server_optimizer:
   beta1: None
   beta2: None
   tau: 0.001
+  lr_decay: 0
 ---
 fed_config:
   num_clients: 50

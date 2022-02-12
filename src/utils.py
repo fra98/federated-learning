@@ -89,22 +89,35 @@ def get_class_priors(num_classes, labels, device='cpu'):
 
 def get_optimizer(conf_optimizer, train_params):
     optimizer = None
+
     if conf_optimizer["name"] == "Adam":
+        eps = conf_optimizer["tau"]
+        if eps is None:
+            eps = 1e-8
         optimizer = torch.optim.Adam(train_params,
             lr=conf_optimizer["lr"],
             weight_decay=conf_optimizer["weight_decay"],
-            betas=[conf_optimizer["beta1"], conf_optimizer["beta2"]])
-        if conf_optimizer["tau"] is not None:
-            optimizer.eps = conf_optimizer["tau"]
+            betas=[conf_optimizer["beta1"], conf_optimizer["beta2"]],
+            eps=eps)
+
     elif conf_optimizer["name"] == "Adagrad":
+        eps = conf_optimizer["tau"]
+        if eps is None:
+            eps = 1e-10
+        lr_decay = conf_optimizer["lr_decay"]
+        if lr_decay is None:
+          lr_decay = 0  
+
         optimizer = torch.optim.Adagrad(train_params,
             lr=conf_optimizer["lr"],
-            weight_decay=conf_optimizer["weight_decay"])
-        if conf_optimizer["tau"] is not None:
-            optimizer.eps = conf_optimizer["tau"]
+            weight_decay=conf_optimizer["weight_decay"],
+            eps=eps,
+            lr_decay=lr_decay)
+
     elif conf_optimizer["name"] == "SGD":
         optimizer = torch.optim.SGD(train_params,
             lr=conf_optimizer["lr"],
             momentum=conf_optimizer["momentum"],
             weight_decay=conf_optimizer["weight_decay"])
+
     return optimizer
