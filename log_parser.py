@@ -46,7 +46,7 @@ def get_results(path):
 
 
 if __name__ == '__main__':
-    for config in range(100):
+    for config in range(101):
         if config in LOGS:
             round, train_acc, train_loss = get_results(BASE_PATH + f"train_acc_{config:02}.txt")
             vect_train_rounds.append(round)
@@ -65,8 +65,20 @@ if __name__ == '__main__':
             vect_test_acc.append([])
             vect_test_loss.append([])
 
+    # CENTRALIZED
+    for config in [1, 2, 3, 4, 5, 6]:
+        round, train_acc, train_loss = get_results(BASE_PATH + f"train_CL_{config:02}.txt")
+        vect_train_rounds.append(round)
+        vect_train_acc.append(train_acc)
+        vect_train_loss.append(train_loss)
+        
+        round, test_acc, test_loss = get_results(BASE_PATH + f"test_CL_{config:02}.txt")    
+        vect_test_rounds.append(round)
+        vect_test_acc.append(test_acc)
+        vect_test_loss.append(test_loss)
 
-    for i in range(100):
+
+    for i in range(100+6):
         assert len(vect_train_rounds[i]) == len(vect_train_acc[i])
         assert len(vect_test_rounds[i]) == len(vect_test_acc[i])
         assert len(vect_test_acc[i]) == len(vect_train_acc[i])
@@ -78,11 +90,13 @@ if __name__ == '__main__':
     plt.xlabel("Rounds")
     plt.ylabel("Accuracy")
     
-    SHOW = [25, 25]
+    SHOW = [25, 35]
+    # SHOW = [101, 103, 105]  # CENTRALIZED
 
     for i in SHOW:
         plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
         plt.plot(vect_test_rounds[i], vect_test_acc[i], label=f'test {i}')
+
     
     plt.legend(loc='lower right')
     plt.show()
