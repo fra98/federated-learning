@@ -9,7 +9,7 @@ LOGS = [
             21, 22, 23, 24, 25,
             30, 31, 32, 34, 35,
             40, 41, 42,
-            50, 51, 52, 53, 54, 55, 56, 57,
+            50, 51, 52, 53, 54, 55, 56, 57,     59,
             60, 61, 62, 63, 64, 65
         ]
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
             vect_test_loss.append([])
 
     # CENTRALIZED
-    for config in [1, 2, 3, 4, 5, 6]:
+    for config in [1, 3, 5]:
         round, train_acc, train_loss = get_results(BASE_PATH + f"train_CL_{config:02}.txt")
         vect_train_rounds.append(round)
         vect_train_acc.append(train_acc)
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         vect_test_loss.append(test_loss)
 
 
-    for i in range(100+6):
+    for i in [1, 3, 5]:
         assert len(vect_train_rounds[i]) == len(vect_train_acc[i])
         assert len(vect_test_rounds[i]) == len(vect_test_acc[i])
         assert len(vect_test_acc[i]) == len(vect_train_acc[i])
@@ -93,12 +93,23 @@ if __name__ == '__main__':
     # SHOW = [25, 35, 54, 55, 64, 65]
     # SHOW = [50, 51, 56, 57]
     SHOW = [25, 51, 53, 55]
-    SHOW = [35, 60, 61, 62, 63, 64, 65]
+    # SHOW = [35, 60, 61, 62, 63, 64, 65]
     # SHOW = [35, 64, 65]
+
+    # SHOW = [5, 19, 24]
+    # SHOW_BN = [30, 31, 34] # BN
+    # SHOW_GN = [40, 41, 44] # GN
+    
+    # SHOW = SHOW + SHOW_BN + SHOW_GN
+    
+    # SHOW = [5, 30, 40]      # alpha = 10
+    # SHOW = [24, 34, 44]     # alpha = 5
+    # SHOW = [19, 31, 41]     # alpha = 1
     # SHOW = [101, 103, 105]  # CENTRALIZED
+    
 
     for i in SHOW:
-        #plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
+        # plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
         plt.plot(vect_test_rounds[i], vect_test_acc[i], label=f'test {i}')
 
     
