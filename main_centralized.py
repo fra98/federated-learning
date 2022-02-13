@@ -19,7 +19,7 @@ STEP_DOWN = False
 STEP_SIZE = [5, 10, 15]   # How many epochs before decreasing learning rate (if using a step-down policy)
 GAMMA = 0.1               # Multiplicative factor for learning rate step-down
 
-NET = LeNet5_MOD_LIGHT_BN
+NET = LeNet5_MOD_BN
 
 
 def run_training(net, criterion, optimizer, scheduler=None):
