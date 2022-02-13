@@ -4,4 +4,8 @@
 Run `pip install -r requirements.txt`
 
 ## Run
-`python main.py`
+`python main_fedAVG.py`
+
+or
+ 
+`python main_fedOPT.py`

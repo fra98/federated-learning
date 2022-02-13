@@ -50,6 +50,7 @@ class Server:
             self.virtual_client_size = self.trainset_size // self.num_clients
         else:
             self.virtual_client_size = None
+            self.clients_weights = None
 
     def init_clients(self):
         # Define each client training size using gaussian distribution
@@ -69,11 +70,17 @@ class Server:
                             logger=self.logger)
             self.clients.append(client)
 
+        # Only for FedVC -> calculate clients weights based on how many samples they have                                                            
+        if self.fed_VC:
+            self.clients_weights = numpy.zeros((len(self.clients)))
+            for i in range(len(self.clients)):
+                self.clients_weights[i] = self.clients[i].trainset_size
+            self.clients_weights = self.clients_weights / numpy.sum(self.clients_weights)
 
     def run_training(self, state_dict=None, state_dict_opt=None, round_num=0, print_acc=True):
         if len(self.clients) == 0:
             self.init_clients()
-        
+
         # Server Net
         self.global_net.to(self.device)
         if state_dict is not None:
@@ -96,20 +103,11 @@ class Server:
             # Reset gradients
             self.optimizer.zero_grad()
 
-            # Calculate clients weights based on how many samples they have
-            if self.fed_VC:
-                clients_weight = numpy.zeros((len(self.clients)))
-                for i in range(len(self.clients)):
-                    clients_weight[i] = self.clients[i].trainset_size
-            else:
-                clients_weight = numpy.ones((len(self.clients)))
-            clients_weight = clients_weight / numpy.sum(clients_weight)
-
             # Get the selected clients for this round
             num_selected_clients = int(max(min(self.num_clients,
                                                random.gauss(self.avg_clients_rounds * self.num_clients,
                                                             self.std_clients_rounds * self.num_clients)), 1))
-            selected_clients = numpy.random.choice(self.clients, num_selected_clients, replace=False, p=clients_weight).tolist()
+            selected_clients = numpy.random.choice(self.clients, num_selected_clients, replace=False, p=self.clients_weights).tolist()
             selected_clients.sort(key=lambda x: x.id)
             num_samples = sum(c.trainset_size for c in selected_clients)  # effective number of samples at current round
 
