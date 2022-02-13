@@ -78,10 +78,10 @@ if __name__ == '__main__':
         vect_test_loss.append(test_loss)
 
 
-    for i in [1, 3, 5]:
+    for i in range(101+3):
         assert len(vect_train_rounds[i]) == len(vect_train_acc[i])
         assert len(vect_test_rounds[i]) == len(vect_test_acc[i])
-        assert len(vect_test_acc[i]) == len(vect_train_acc[i])
+        # assert len(vect_test_acc[i]) == len(vect_train_acc[i])
 
 
     # PLOTTING
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     
 
     for i in SHOW:
-        #plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
+        # plt.plot(vect_train_rounds[i], vect_train_acc[i], label=f'train {i}')
         plt.plot(vect_test_rounds[i], vect_test_acc[i], label=f'test {i}')
 
     
