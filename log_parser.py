@@ -66,7 +66,7 @@ if __name__ == '__main__':
             vect_test_loss.append([])
 
     # CENTRALIZED
-    for config in [1, 3, 5]:
+    for config in [1, 2, 3]:
         round, train_acc, train_loss = get_results(BASE_PATH + f"train_CL_{config:02}.txt")
         vect_train_rounds.append(round)
         vect_train_acc.append(train_acc)
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     # SHOW = [5, 30, 40]      # alpha = 10
     # SHOW = [24, 34, 44]     # alpha = 5
     # SHOW = [19, 31, 41]     # alpha = 1
-    # SHOW = [101, 103, 105]  # CENTRALIZED
+    SHOW = [101, 102, 103]  # CENTRALIZED
     
 
     for i in SHOW:
