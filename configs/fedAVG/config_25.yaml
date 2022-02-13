@@ -24,4 +24,3 @@ fed_config:
   local_epochs: 2
   fed_IR: false
   fed_VC: false
-
