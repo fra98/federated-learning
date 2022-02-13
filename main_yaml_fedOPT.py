@@ -6,7 +6,7 @@ from src.logger_manager import LoggerHandler
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-CONFIG = "config_Adam_light"
+CONFIG = "config_50"
 
 LOG_PATH = ""
 LOG_NAME = f"{CONFIG}.log"

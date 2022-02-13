@@ -1,8 +1,6 @@
 from copy import deepcopy
 import random
 import numpy
-import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -11,6 +9,7 @@ from .client import Client
 from ..models import *
 from ..utils import get_class_priors, load_cifar, run_accuracy, generate_clients_sizes
 from ..splits import indexes_split_IID, indexes_split_NON_IID
+
 
 class Server:
     def __init__(self, device, data_config, model_config, optim_config, fed_config, logger=None):
@@ -83,7 +82,7 @@ class Server:
         self.global_net.to(self.device)
         if state_dict is not None:
             self.global_net.load_state_dict(state_dict)
-        self.global_net.train()     # when gloabal net does it train?
+        self.global_net.train()
 
         for _ in range(self.num_rounds):
             round_num += 1
